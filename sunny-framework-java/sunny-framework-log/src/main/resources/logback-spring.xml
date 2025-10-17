@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
-    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
-    <springProperty scope="context" name="LOGSTASH_ADDR" source="logstash.addr" defaultValue="127.0.0.1:4560"/>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-    </root>
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
+    <springProperty scope="context" name="LOG_ADDR" source="logstash.addr" defaultValue="127.0.0.1:4560"/>
 
     <if condition='"${logstash.enabled}".equals("true")'>
         <then>
             <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-                <destination>${LOGSTASH_ADDR}</destination>
+                <destination>${LOG_ADDR}</destination>
                 <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
                     <providers>
                         <timestamp>
@@ -21,7 +17,7 @@
                         <pattern>
                             <pattern>
                                 {
-                                "service": "${springAppName:-}",
+                                "service": "${APP_NAME:-}",
                                 "level": "%level",
                                 "pid": "${PID:-}",
                                 "thread": "%thread",
