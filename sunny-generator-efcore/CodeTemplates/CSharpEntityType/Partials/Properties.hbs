@@ -1,0 +1,7 @@
+﻿{{#each properties}}
+{{#if property-comment}}
+{{property-comment}}
+{{/if}}
+        [Column("{{column-name}}")]
+        public {{property-type}} {{property-name}} { get; set; }
+{{/each}}

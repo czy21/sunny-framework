@@ -1,0 +1,32 @@
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'minutes'
+}
+
+targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_17
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs.add("-parameters")
+}
+
+jar {
+    afterEvaluate {
+        manifest {
+            attributes 'Implementation-Title': archiveBaseName
+            attributes 'Implementation-Version': archiveVersion
+            attributes 'Build-Gradle': gradle.gradleVersion
+            attributes 'Build-OS': System.getProperty("os.name")
+            attributes 'Build-By': System.getProperty("user.name")
+            attributes 'Build-Jdk-Spec': System.getProperty("java.version")
+            attributes 'Build-SourceCompatibility': sourceCompatibility
+            attributes 'Build-TargetCompatibility': targetCompatibility
+            attributes 'Build-Time': LocalDateTime.now().format("yyyy-MM-dd HH:mm:ss")
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

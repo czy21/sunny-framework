@@ -1,0 +1,7 @@
+plugins {
+    id "lombok.build"
+}
+dependencies {
+    api "com.xuxueli:xxl-job-core"
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+}

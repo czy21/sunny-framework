@@ -1,0 +1,15 @@
+
+
+tasks.named('pnpmInstall', PnpmTask) {
+}
+
+tasks.register('clean', Delete) {
+    group 'build'
+    delete 'build'
+}
+
+tasks.register('build', NpmTask) {
+    group 'build'
+    dependsOn tasks.pnpmInstall
+    args = ['run', 'build']
+}

@@ -1,0 +1,27 @@
+﻿{{> imports}}
+
+namespace {{namespace}}.Model
+{
+    {{#if comment}}
+{{comment}}
+    {{/if}}
+    [Table("{{table-name}}")]
+    public class {{class}} : BaseEntity<{{primary-key-type}}, string>
+    {
+        {{{> properties}}}
+
+        public static {{class}} Empty()
+        {
+            return new ()
+            {
+            {{#each propertiesAll}}
+              {{#ifEquals field-type "string"}}
+                {{property-name}} = string.Empty,
+              {{else}}
+                {{property-name}} = default({{field-type}}),
+              {{/ifEquals}}
+            {{/each}}
+            };
+        }
+    }
+}

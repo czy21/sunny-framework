@@ -1,0 +1,9 @@
+using Sunny.Framework.DB.Repository;
+using {{namespace}}.Model;
+
+namespace {{namespace}}.Repository.impl
+{
+    public class {{entity-name}}Repository(AppDbContext dbContext) : RepositoryBase<{{primary-key-type}}, {{class}}>(dbContext), I{{entity-name}}Repository
+    {
+    }
+}

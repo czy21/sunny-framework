@@ -1,0 +1,64 @@
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+$layout_header_height: 40px;
+$aside_collapse_width: 60px;
+
+.el-container {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.el-aside {
+  width: 200px !important;
+  background-color: #304156;
+  -webkit-transition: width 0.3s ease-in-out;
+  transition: width 0.3s ease-in-out;
+
+  .el-menu {
+    width: 100%;
+    height: 100%;
+    border-right: 0;
+
+    .menu-info {
+      height: $layout_header_height;
+    }
+
+    .el-icon-arrow-right:before {
+      content: "";
+    }
+  }
+}
+
+.main-collapse {
+  width: $aside_collapse_width !important;
+}
+
+.el-header {
+  background-color: #20a0ff;
+  padding: 0 !important;
+  height: $layout_header_height !important;
+
+  .collapse-btn {
+    width: 20px;
+    height: $layout_header_height;
+    padding: 0 20px;
+    line-height: 20px;
+    display: flex;
+    cursor: pointer;
+  }
+
+  .collapse-btn:hover {
+    background: rgb(40, 52, 70);
+  }
+}
+
+.el-submenu .el-menu-item {
+  min-width: 0 !important;
+}
+

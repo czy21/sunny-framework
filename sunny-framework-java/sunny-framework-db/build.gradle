@@ -1,0 +1,10 @@
+dependencies {
+    api "com.mysql:mysql-connector-j"
+    api "org.postgresql:postgresql"
+    api "com.microsoft.sqlserver:mssql-jdbc"
+
+    api "org.springframework.boot:spring-boot-starter-aop"
+    api "org.springframework.boot:spring-boot-starter-jdbc"
+    api 'org.mybatis.spring.boot:mybatis-spring-boot-starter'
+    api 'com.github.pagehelper:pagehelper-spring-boot-starter'
+}

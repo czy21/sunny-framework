@@ -1,0 +1,10 @@
+{
+  "name": "sunny-framework-js",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "@sunny-framework-js/core": "workspace:*",
+    "@sunny-framework-js/react": "workspace:*",
+    "@sunny-framework-js/vue": "workspace:*"
+  }
+}
