@@ -4,7 +4,6 @@
 <generatorConfiguration>
     <properties resource="generator.properties"/>
     <context id="simple" targetRuntime="MyBatis3" defaultModelType="flat">
-        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
         <plugin type="com.sunny.generator.mybatis.plugins.LombokPlugin">
             <property name="builder" value="true"/>
             <property name="noArgsConstructor" value="true"/>
@@ -42,16 +41,12 @@
         <sqlMapGenerator targetPackage="generator" targetProject="src/main/resources"/>
         <javaClientGenerator type="XMLMAPPER" targetPackage="generator.mapper" targetProject="src/main/java"/>
 
-<!--        <table tableName="sys_%"-->
-<!--               enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" selectByExampleQueryId="true">-->
-<!--            <domainObjectRenamingRule searchString="^Sys(.*)$" replaceString="$1"/>-->
-<!--        </table>-->
+        <table tableName="sys_%"
+               enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" selectByExampleQueryId="true">
+            <domainObjectRenamingRule searchString="^Sys(.*)$" replaceString="$1"/>
+        </table>
 
-<!--        <table tableName="sys_file" domainObjectName="FilePO" mapperName="FileMapper"-->
-<!--               enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" selectByExampleQueryId="true">-->
-<!--        </table>-->
-
-        <table tableName="sys_conf"
+        <table tableName="sys_file" domainObjectName="FilePO" mapperName="FileMapper"
                enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" selectByExampleQueryId="true">
         </table>
 

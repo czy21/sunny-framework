@@ -12,14 +12,6 @@ import org.mybatis.generator.internal.util.StringUtility;
 public class CommentGenerator extends DefaultCommentGenerator {
 
     @Override
-    public void addComment(XmlElement xmlElement) {
-    }
-
-    @Override
-    public void addGeneralMethodComment(Method method, IntrospectedTable introspectedTable) {
-    }
-
-    @Override
     public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         String remarks = introspectedTable.getRemarks();
         if (StringUtility.stringHasValue(remarks)) {
