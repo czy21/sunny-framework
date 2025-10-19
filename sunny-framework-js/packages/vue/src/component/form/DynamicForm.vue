@@ -39,7 +39,7 @@ const option = computed(() => ({
   ...props.option,
 }));
 
-const formData = computed(() => ({ ...props.formData }));
+const formData = computed(() => props.formData);
 
 const emit = defineEmits<{
   'submit': []
