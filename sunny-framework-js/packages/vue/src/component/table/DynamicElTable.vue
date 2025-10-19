@@ -49,14 +49,16 @@
       <el-button @click="addRow" type="primary">加行</el-button>
     </template>
   </el-table>
+  <el-pagination v-if="props.showPageable" size="default" background
+                 :layout="props.pageLayout" :page-sizes="props.pageSizes" :current-page="page" :page-size="pageSize" :total="total" @current-change="handlePage" @size-change="handlePageSize"/>
 </template>
 
 <script lang="tsx" setup>
-import {FunctionalComponent, h, ref} from "vue"
+import {FunctionalComponent, h, ref, toRefs} from "vue"
 import DynamicElColumn from "./DynamicElColumn.vue"
-import {ElButton, ElDatePicker, ElInput, ElOption, ElSelect, ElTable, RenderRowData} from "element-plus";
+import {ElButton, ElDatePicker, ElInput, ElOption, ElSelect, ElTable} from "element-plus";
 import {util} from "@sunny-framework-js/core"
-import {TableEmits, TableProps} from "./DynamicTable.ts";
+import {TableEmits, TableProps} from "./DynamicTableType.ts";
 
 const props = withDefaults(defineProps<TableProps>(), {
   defaultRowValue() {
@@ -77,13 +79,32 @@ const props = withDefaults(defineProps<TableProps>(), {
     return false
   },
   showSummary() {
-    return true
+    return false
   },
   showAddRow() {
+    return false
+  },
+  showPageable() {
     return true
+  },
+  page() {
+    return 1
+  },
+  pageSize() {
+    return 10
+  },
+  pageSizes() {
+    return [10, 20, 50, 100]
+  },
+  pageLayout() {
+    return "total, sizes, prev, pager, next, jumper"
+  },
+  total() {
+    return 0
   }
 })
 
+let {page, pageSize, total} = toRefs(props)
 
 const emit = defineEmits<TableEmits>()
 
@@ -270,6 +291,14 @@ const summaryMethod = (data: { columns: any[], data: any[] }) => {
     return data.columns.map(c => h('dl', {style: {}}, sums.map(t => h('dt', null, [reduceProperties.includes(c.property) ? (t[c.property] || 0) : ""]))))
   }
   return []
+}
+
+const handlePage = (val) => {
+  emit('pageChange', val)
+}
+
+const handlePageSize = (val) => {
+  emit('pageSizeChange', val)
 }
 
 defineExpose({

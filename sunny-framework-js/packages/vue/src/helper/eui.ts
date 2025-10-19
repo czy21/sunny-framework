@@ -35,20 +35,29 @@ export const confirm = function (text: string, successCallback?: Function, cance
     })
 }
 
-export const validateForm = function (vm: any, target: string) {
-    let res = false
-    vm.$refs[target].validate((valid: boolean) => {
-        res = valid
+export const validateForm = function (formEl: any, callback?: Function) {
+    if (!formEl) return
+    formEl.validate((valid: any) => {
+        if(valid) {
+            util.basic.callIfExists(callback)
+        }
     })
-    return res
 }
 
-export const actWithValidation = function (vm: any, target: Array<String> | String, callback?: Function) {
-
-    let targets = _.isString(target) ? new Array(target) : target
-
-    let valid = _.every(targets, (v: string) => {
-        return validateForm(vm, v)
-    })
-    valid ? util.basic.callIfExists(callback) : warn("请检查输入的参数再执行操作")
-}
+// export const validateForm = function (vm: any, target: string) {
+//     let res = false
+//     vm.$refs[target].validate((valid: boolean) => {
+//         res = valid
+//     })
+//     return res
+// }
+//
+// export const actWithValidation = function (vm: any, target: Array<String> | String, callback?: Function) {
+//
+//     let targets = _.isString(target) ? new Array(target) : target
+//
+//     let valid = _.every(targets, (v: string) => {
+//         return validateForm(vm, v)
+//     })
+//     valid ? util.basic.callIfExists(callback) : warn("请检查输入的参数再执行操作")
+// }

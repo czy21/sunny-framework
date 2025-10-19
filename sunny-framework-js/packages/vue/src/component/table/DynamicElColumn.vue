@@ -21,7 +21,7 @@
 
 <script setup lang="tsx">
 import {ElTableColumn, RenderRowData} from "element-plus";
-import { TableColumn } from "./DynamicTable";
+import { TableColumn } from "./DynamicTableType.ts";
 
 const props = defineProps(["node"])
 

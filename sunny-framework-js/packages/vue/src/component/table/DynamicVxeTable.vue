@@ -62,7 +62,7 @@
 import {FunctionalComponent, ref} from "vue"
 import DynamicVxeColumn from "./DynamicVxeColumn.vue"
 import {util} from "@sunny-framework-js/core"
-import {TableProps, TableEmits} from "./DynamicTable.ts";
+import {TableProps, TableEmits} from "./DynamicTableType.ts";
 import {VxeTable} from "vxe-table";
 import {ElButton, ElDatePicker, ElInput, ElInputNumber, ElOption, ElSelect} from "element-plus";
 

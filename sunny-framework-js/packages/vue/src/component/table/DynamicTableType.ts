@@ -18,12 +18,22 @@ export interface TableProps {
     editable?: boolean
     showSummary?: boolean
     showAddRow?: boolean
+    showPageable?: boolean
+    page?: number
+    pageSize?: number
+    pageSizes?: number[]
+    pageLayout?: string
+    total?: number
+    changePage?: Function<string, void>
+    changePageSize?: Function<string, void>
 }
 
 export interface TableEmits {
     handleEdit: [value: any, scope: any, dict: DictType]
     handleEditChange: [value: any, scope: any, dict: DictType]
     handleSelectSearch: [value: any, scope: any, dict: DictType]
+    pageChange: [value: number]
+    pageSizeChange: [value: number]
 }
 
 export interface TableColumn {

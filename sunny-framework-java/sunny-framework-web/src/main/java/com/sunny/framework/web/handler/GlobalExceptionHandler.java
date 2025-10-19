@@ -35,10 +35,16 @@ public class GlobalExceptionHandler {
         return CommonResult.error(CommonCodeEnum.EXCEPTION.getMessage());
     }
 
-    @ExceptionHandler(value = CommonException.class)
+    @ExceptionHandler(value = {CommonException.class})
     @ResponseBody
     public CommonResult<?> handleCommonException(CommonException e) {
         return CommonResult.error(e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(value = {IllegalArgumentException.class})
+    @ResponseBody
+    public CommonResult<?> handleIllegalArgumentException(IllegalArgumentException e) {
+        return CommonResult.error(e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

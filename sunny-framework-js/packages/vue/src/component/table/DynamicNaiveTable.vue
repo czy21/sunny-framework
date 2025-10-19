@@ -16,7 +16,7 @@
 <script setup lang="tsx">
 import {FunctionalComponent, ref, computed, h} from "vue"
 import {util} from "@sunny-framework-js/core"
-import {TableProps, TableEmits} from "./DynamicTable.ts";
+import {TableProps, TableEmits} from "./DynamicTableType.ts";
 import {NDataTable} from "naive-ui";
 import {ElButton, ElDatePicker, ElInput, ElInputNumber, ElOption, ElSelect} from "element-plus";
 import _ from "lodash";
