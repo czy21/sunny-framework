@@ -9,20 +9,22 @@ import {ref} from "vue";
 import {DynamicForm, DynamicFormOption} from "@sunny-framework-js/vue";
 import type {FormInstance} from 'element-plus'
 
-const editRef = ref(null);
+const editRef = ref();
 
 interface Props {
   dialogShow: boolean
   dialogTitle?: string
-  formOption: DynamicFormOption,
+  formOption?: DynamicFormOption,
   formData?: Partial<FormData>
 }
 
 const props = withDefaults(defineProps<Props>(), {
   dialogShow: false,
   dialogTitle: '',
-  formOption: {},
-  formData: {},
+  formOption: (): any => {
+  },
+  formData: (): any => {
+  },
 })
 
 const emit = defineEmits<{

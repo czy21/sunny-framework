@@ -1,7 +1,7 @@
 export interface DynamicFormOption {
-    list: DynamicFormOptionList[];
-    labelWidth?: number | string;
-    span?: number;
+    labelPosition: "top" | "bottom" | "left" | "right";
+    span: string;
+    items: DynamicFormOptionList[]
 }
 
 export interface DynamicFormOptionList {
