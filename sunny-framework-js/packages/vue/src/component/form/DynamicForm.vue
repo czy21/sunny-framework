@@ -1,6 +1,7 @@
 <template>
   <el-form ref="formRef"
            label-width="auto"
+           :key="props.formKey"
            :model="formData"
            :label-position="option.labelPosition">
     <el-row>
@@ -29,7 +30,8 @@ import {computed, ref} from 'vue';
 
 const props = defineProps<{
   option?: DynamicFormOption;
-  formData?: Record<string, any>;
+  formKey?: string | number;
+  formData: Record<string, any>;
 }>();
 
 const option = computed(() => ({
@@ -39,7 +41,7 @@ const option = computed(() => ({
   ...props.option,
 }));
 
-const formData = computed(() => props.formData);
+const formData: Record<string, any> = computed(() => props.formData);
 
 const emit = defineEmits<{
   'submit': []

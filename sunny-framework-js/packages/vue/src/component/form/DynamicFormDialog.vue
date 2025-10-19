@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="props.dialogShow" :title="props.dialogTitle" @close="handleCancel">
-    <DynamicForm ref="editRef" :form-data="props.formData" :option="props.formOption" @submit="handleSubmit" @cancel="handleCancel"/>
+    <DynamicForm :form-key="props.formKey" ref="editRef" :form-data="props.formData" :option="props.formOption" @submit="handleSubmit" @cancel="handleCancel"/>
   </el-dialog>
 </template>
 
@@ -11,21 +11,13 @@ import type {FormInstance} from 'element-plus'
 
 const editRef = ref();
 
-interface Props {
-  dialogShow: boolean
-  dialogTitle?: string
-  formOption?: DynamicFormOption,
-  formData?: Partial<FormData>
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  dialogShow: false,
-  dialogTitle: '',
-  formOption: (): any => {
-  },
-  formData: (): any => {
-  },
-})
+const props = defineProps<{
+  dialogShow: boolean,
+  dialogTitle: string,
+  formKey?: string,
+  formOption: DynamicFormOption,
+  formData: Record<string, any>
+}>()
 
 const emit = defineEmits<{
   'update:dialogShow': [value: boolean]
