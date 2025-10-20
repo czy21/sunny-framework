@@ -34,7 +34,7 @@
                      filterable
                      :multiple="scope.column.params.multiple"
                      :remote="scope.column.params.remote"
-                     :remote-method="(value)=>emit('handleSelectSearch',value,scope,props.dict)"
+                     :remote-method="(value)=>emit('select-search',value,scope,props.dict)"
           >
             <el-option v-for="t in props.dict[scope.column.params.dictKey]" :label="t.label" :value="t.value"/>
           </el-select>
@@ -62,7 +62,7 @@
 import {FunctionalComponent, ref} from "vue"
 import DynamicVxeColumn from "./DynamicVxeColumn.vue"
 import {util} from "@sunny-framework-js/core"
-import {TableProps, TableEmits} from "./DynamicTableType.ts";
+import {TableEmits, TableProps} from "./DynamicTableType.ts";
 import {VxeTable} from "vxe-table";
 import {ElButton, ElDatePicker, ElInput, ElInputNumber, ElOption, ElSelect} from "element-plus";
 
@@ -177,7 +177,7 @@ const handleCell = (scope) => {
     if (scope.column.params.multiple && scope.row[scope.column.property]) {
       scope.row[`${scope.column.property}List`] = scope.row[scope.column.property].split(" ")
     }
-    emit("handleEdit", scope.row[scope.column.property], scope, props.dict)
+    emit("edit", scope.row[scope.column.property], scope, props.dict)
   }
 }
 
@@ -192,7 +192,7 @@ const changeColumn = (value, scope) => {
 
 const handleInput = (value: any, scope) => {
   changeColumn(value, scope)
-  emit('handleEditChange', value, scope, props.dict)
+  emit('edit-change', value, scope, props.dict)
 }
 
 const handleExtra = (value: any, scope) => {
@@ -209,12 +209,12 @@ const handleSelect = (value: any, scope) => {
   if (scope.column.params.multiple) {
     scope.row[scope.column.property] = value.join(" ")
   }
-  emit('handleEditChange', value, scope, props.dict)
+  emit('edit-change', value, scope, props.dict)
 }
 
 const handleDate = (value: any, scope) => {
   changeColumn(value, scope)
-  emit('handleEditChange', value, scope, props.dict)
+  emit('edit-change', value, scope, props.dict)
 }
 
 const showAddRow = (scope) => {
@@ -254,7 +254,7 @@ const summaryMethod = (data: { columns: any[], data: any[] }) => {
       })
     }
 
-    subTotal.keys().forEach((k, i) => {
+    (subTotal.keys() as string[]).forEach((k, i) => {
       const s = subTotal.get(k)
       let objs = s.byValue ? Object.groupBy(data.data, t => s.groupBy(t, data)) : {[k]: data.data.filter(t => s.groupBy(t, data))}
       sums.push(...reduceTotal(objs, i))

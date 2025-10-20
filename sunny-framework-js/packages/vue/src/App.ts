@@ -15,7 +15,7 @@ const createApp = (rootComponent?: Component) => {
 
     Object.entries(ElementPlusIconsVue).forEach(([k, v]) => app.component(k, v))
 
-    app.use(ElementPlus, {size: 'mini'} as any)
+    app.use(ElementPlus, {size: 'default'} as any)
     app.use(VxeUITable)
 
     return app

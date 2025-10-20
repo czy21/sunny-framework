@@ -16,7 +16,6 @@
         <template v-else-if="scope.row[`${scope.column.property}_editable`]">
           <el-input ref="editRef" v-model="scope.row[scope.column.property]" @blur="onExitEditMode(scope)" v-if="isInput(scope)" @change="(value)=>handleInput(value,scope)"/>
           <el-input-number ref="editRef" v-model="scope.row[scope.column.property]" @blur="onExitEditMode(scope)" v-else-if="isInputNumber(scope)" @change="(value)=>handleInput(value,scope)"
-                           size="default"
                            :controls="false"
                            :type="scope.column.params.type"
                            :precision="!util.object.isEmpty(scope.column.params.precision)?scope.column.params.precision : 2"
@@ -27,12 +26,11 @@
                      clearable
                      filterable
                      :remote="scope.column.params.remote"
-                     :remote-method="(value)=>emit('handleSelectSearch',value,scope,props.dict)"
+                     :remote-method="(value)=>emit('select-search',value,scope,props.dict)"
           >
             <el-option v-for="t in props.dict[scope.column.params.dictKey]" :label="t.label" :value="t.value"/>
           </el-select>
           <el-date-picker ref="editRef" v-model="scope.row[scope.column.property]" @blur="onExitEditMode(scope)" v-else-if="isDate(scope)" @change="(value)=>handleDate(value,scope)"
-                          size="default"
                           :type="scope.column.params.type"
                           :value-format="scope.column.params.format || 'YYYY-MM-DD HH:mm:ss'"
           />
@@ -49,12 +47,10 @@
       <el-button @click="addRow" type="primary">加行</el-button>
     </template>
   </el-table>
-  <el-pagination v-if="props.showPageable" size="default" background
-                 :layout="props.pageLayout" :page-sizes="props.pageSizes" :current-page="page" :page-size="pageSize" :total="total" @current-change="handlePage" @size-change="handlePageSize"/>
 </template>
 
 <script lang="tsx" setup>
-import {FunctionalComponent, h, ref, toRefs} from "vue"
+import {FunctionalComponent, h, ref} from "vue"
 import DynamicElColumn from "./DynamicElColumn.vue"
 import {ElButton, ElDatePicker, ElInput, ElOption, ElSelect, ElTable} from "element-plus";
 import {util} from "@sunny-framework-js/core"
@@ -83,28 +79,8 @@ const props = withDefaults(defineProps<TableProps>(), {
   },
   showAddRow() {
     return false
-  },
-  showPageable() {
-    return true
-  },
-  page() {
-    return 1
-  },
-  pageSize() {
-    return 10
-  },
-  pageSizes() {
-    return [10, 20, 50, 100]
-  },
-  pageLayout() {
-    return "total, sizes, prev, pager, next, jumper"
-  },
-  total() {
-    return 0
   }
 })
-
-let {page, pageSize, total} = toRefs(props)
 
 const emit = defineEmits<TableEmits>()
 
@@ -116,7 +92,7 @@ const headerCellStyle = ({column}) => {
 }
 
 const handleCellFocus = (callBackFn?: Function) => {
-  editRef.value?.forEach((t, i, a) => {
+  editRef.value?.forEach((t: any, i: any, a: any) => {
     if (i === a.length - 1) {
       t.focus?.()
       callBackFn && callBackFn(t)
@@ -124,7 +100,7 @@ const handleCellFocus = (callBackFn?: Function) => {
   })
 }
 
-const isInput = (scope) => {
+const isInput = (scope: any) => {
   let val = !scope.column.params.type || scope.column.params.type === 'string'
   if (val) {
     handleCellFocus()
@@ -132,7 +108,7 @@ const isInput = (scope) => {
   return val
 }
 
-const isInputNumber = (scope) => {
+const isInputNumber = (scope: any) => {
   let val = scope.column.params.type === 'number'
   if (val) {
     handleCellFocus()
@@ -140,7 +116,7 @@ const isInputNumber = (scope) => {
   return val
 }
 
-const isSelect = (scope) => {
+const isSelect = (scope: any) => {
   let val = scope.column.params.type === 'select'
   if (val) {
     handleCellFocus()
@@ -148,15 +124,15 @@ const isSelect = (scope) => {
   return val
 }
 
-const isDate = (scope) => {
+const isDate = (scope: any) => {
   let val = scope.column.params.type === 'date' || scope.column.params.type === 'datetime'
   if (val) {
-    handleCellFocus(t => t.handleOpen())
+    handleCellFocus((t: any) => t.handleOpen())
   }
   return val
 }
 
-const onExitEditMode = (scope) => {
+const onExitEditMode = (scope: any) => {
   delete scope.row[`${scope.column.property}_editable`]
   if (scope.column.params.type == 'number') {
     tableRef.value.updateFooter?.()
@@ -188,39 +164,37 @@ const ShowCell: FunctionalComponent<any> = (scope) => {
 const handleCell = (row: any, column: any) => {
   if (props.editable && (column.params.editable == true || util.object.getValueByExpression(row, column.params.editable))) {
     row[`${column.property}_editable`] = true
-    emit("handleEdit", row[column.property], {row: row, column: column}, props.dict)
+    emit("edit", row[column.property], {row: row, column: column}, props.dict)
   }
+}
+
+function recursiveNode(node: any) {
+  let arr = []
+  for (const t of node.children) {
+    arr = [...arr, ...(t.children ? recursiveNode(t) : [t])]
+  }
+  return arr
 }
 
 const getLeafColumns = () => {
-
-  function recursiveNode(node) {
-    let arr = []
-    for (var t of node.children) {
-      arr = [...arr, ...(t.children ? recursiveNode(t) : [t])]
-    }
-    return arr
-  }
-
   return recursiveNode({children: tableRef.value.columns})
-
 }
 
-const changeColumn = (value, scope) => {
-  const changeColumns = getLeafColumns().filter(t => t.params.changeByProps?.includes(scope.column.property))
-  changeColumns.forEach(c => {
+const changeColumn = (value: any, scope: any) => {
+  const changeColumns = getLeafColumns().filter((t: any) => t.params.changeByProps?.includes(scope.column.property))
+  changeColumns.forEach((c: any) => {
     if (c.params.rowTotal) {
       scope.row[c.property] = Number(util.object.getValueByExpression(scope.row, c.params.rowTotal) || null).toFixed(!util.object.isEmpty(c.params.precision) ? c.params.precision : 2)
     }
   })
 }
 
-const handleInput = (value: any, scope) => {
+const handleInput = (value: any, scope: any) => {
   changeColumn(value, scope)
-  emit('handleEditChange', value, scope, props.dict)
+  emit('edit-change', value, scope, props.dict)
 }
 
-const handleExtra = (value: any, scope) => {
+const handleExtra = (value: any, scope: any) => {
   let dictPush = scope.column.params.dictPush
   if (dictPush) {
     let dictExtra = (props.dict[scope.column.params.dictKey].find((t: any) => t.value === value)?.extra || {})
@@ -228,31 +202,31 @@ const handleExtra = (value: any, scope) => {
   }
 }
 
-const handleSelect = (value: any, scope) => {
+const handleSelect = (value: any, scope: any) => {
   handleExtra(value, scope);
   changeColumn(value, scope)
-  emit('handleEditChange', value, scope, props.dict)
+  emit('edit-change', value, scope, props.dict)
 }
 
-const handleDate = (value: any, scope) => {
+const handleDate = (value: any, scope: any) => {
   changeColumn(value, scope)
-  emit('handleEditChange', value, scope, props.dict)
+  emit('edit-change', value, scope, props.dict)
 }
 
-const showAddRow = (scope) => {
+const showAddRow = (scope: any) => {
   return scope.rowIndex == props.data.length - 1
 }
 
-const addRow = (scope) => {
+const addRow = (scope: any) => {
   props.data.splice(scope?.rowIndex + 1, 0, {...props.defaultRowValue})
 }
 
-const delRow = (scope) => {
+const delRow = (scope: any) => {
   props.data.splice(scope.rowIndex, 1)
 }
 
 const handleScroll = () => {
-  editRef.value?.forEach(t => t.blur?.())
+  editRef.value?.forEach((t: any) => t.blur?.())
 }
 
 const summaryMethod = (data: { columns: any[], data: any[] }) => {
@@ -267,7 +241,7 @@ const summaryMethod = (data: { columns: any[], data: any[] }) => {
       data.data.forEach(t => t[c.property] = Number(util.object.getValueByExpression(t, c.params.rowTotal) || null).toFixed(2))
     })
 
-    function reduceTotal(objs, sort) {
+    function reduceTotal(objs: any, sort: any) {
       return Object.entries(objs).filter(([k, v]) => v.length > 0).map(([k, v]) => {
         let subItem: any = {}
         subItem[firstProperty] = k == 'undefined' ? '' : k
@@ -277,9 +251,9 @@ const summaryMethod = (data: { columns: any[], data: any[] }) => {
       })
     }
 
-    subTotal.keys().forEach((k, i) => {
-      const s = subTotal.get(k)
-      let objs = s.byValue ? Object.groupBy(data.data, t => s.groupBy(t, data)) : {[k]: data.data.filter(t => s.groupBy(t, data))}
+    (subTotal.keys() as string[]).forEach((k, i) => {
+      const s: any = subTotal.get(k)
+      let objs = s.byValue ? Object.groupBy(data.data, (t: any) => s.groupBy(t, data)) : {[k]: data.data.filter(t => s.groupBy(t, data))}
       sums.push(...reduceTotal(objs, i))
     })
 
@@ -291,14 +265,6 @@ const summaryMethod = (data: { columns: any[], data: any[] }) => {
     return data.columns.map(c => h('dl', {style: {}}, sums.map(t => h('dt', null, [reduceProperties.includes(c.property) ? (t[c.property] || 0) : ""]))))
   }
   return []
-}
-
-const handlePage = (val) => {
-  emit('pageChange', val)
-}
-
-const handlePageSize = (val) => {
-  emit('pageSizeChange', val)
 }
 
 defineExpose({

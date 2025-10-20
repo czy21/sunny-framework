@@ -4,6 +4,7 @@ import DynamicVxeColumn from "./DynamicVxeColumn.vue";
 import DynamicVxeTable from './DynamicVxeTable.vue'
 import DynamicNaiveTable from './DynamicNaiveTable.vue'
 import DynamicElTableSearch from "./DynamicElTableSearch.vue";
+import Pagination from "./Pagination.vue";
 
 export {
     DynamicElColumn,
@@ -11,5 +12,6 @@ export {
     DynamicVxeColumn,
     DynamicVxeTable,
     DynamicNaiveTable,
-    DynamicElTableSearch
+    DynamicElTableSearch,
+    Pagination
 }

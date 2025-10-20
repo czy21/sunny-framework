@@ -24,16 +24,13 @@ export interface TableProps {
     pageSizes?: number[]
     pageLayout?: string
     total?: number
-    changePage?: Function<string, void>
-    changePageSize?: Function<string, void>
 }
 
 export interface TableEmits {
-    handleEdit: [value: any, scope: any, dict: DictType]
-    handleEditChange: [value: any, scope: any, dict: DictType]
-    handleSelectSearch: [value: any, scope: any, dict: DictType]
-    pageChange: [value: number]
-    pageSizeChange: [value: number]
+    'edit': [value: any, scope: any, dict: DictType]
+    'edit-change': [value: any, scope: any, dict: DictType]
+    'select-search': [value: any, scope: any, dict: DictType]
+    'pagination': [{ page: number, pageSize: number }]
 }
 
 export interface TableColumn {

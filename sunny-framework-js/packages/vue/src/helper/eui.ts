@@ -38,7 +38,7 @@ export const confirm = function (text: string, successCallback?: Function, cance
 export const validateForm = function (formEl: any, callback?: Function) {
     if (!formEl) return
     formEl.validate((valid: any) => {
-        if(valid) {
+        if (valid) {
             util.basic.callIfExists(callback)
         }
     })
