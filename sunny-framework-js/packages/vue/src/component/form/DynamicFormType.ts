@@ -1,10 +1,10 @@
 export interface DynamicFormOption {
-    labelPosition: "top" | "bottom" | "left" | "right";
-    span: string;
-    items: DynamicFormOptionList[]
+    labelPosition?: "top" | "bottom" | "left" | "right";
+    span?: string;
+    items: DynamicFormItemOption[]
 }
 
-export interface DynamicFormOptionList {
+export interface DynamicFormItemOption {
     prop: string;
     name: string;
     type: string;

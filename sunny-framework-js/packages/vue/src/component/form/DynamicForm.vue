@@ -1,7 +1,6 @@
 <template>
   <el-form ref="formRef"
            label-width="auto"
-           :key="props.formKey"
            :model="formData"
            :label-position="option.labelPosition">
     <el-row>
@@ -27,10 +26,10 @@
 <script lang="ts" setup>
 import {DynamicFormOption} from './DynamicFormType.ts';
 import {computed, ref} from 'vue';
+import type {FormInstance} from 'element-plus'
 
 const props = defineProps<{
-  option?: DynamicFormOption;
-  formKey?: string | number;
+  option: DynamicFormOption;
   formData: Record<string, any>;
 }>();
 
@@ -48,7 +47,7 @@ const emit = defineEmits<{
   'cancel': []
 }>()
 
-const formRef = ref(null);
+const formRef = ref<FormInstance>()
 
 const handleSubmit = () => {
   emit('submit')
