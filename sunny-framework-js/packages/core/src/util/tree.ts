@@ -72,12 +72,24 @@ export const buildByPath = (all: any[], attr: { idKey?: string, parentKey?: stri
     return root.children
 }
 
-export const flatten = (root,childKey='children')=>{
-  const result = []
-  if (root[childKey]?.length) {
-    for (const child of root[childKey]) {
-      result.push(child, ...flatten(child, childKey))
+export const flatten = (node: any, childKey = 'children') => {
+    const result = []
+    if (node[childKey]?.length) {
+        for (const child of node[childKey]) {
+            result.push(child, ...flatten(child, childKey))
+        }
     }
-  }
-  return result
+    return result
+}
+
+export const getLeafNodes = (node: any, childKey = 'children') => {
+    const result = []
+    if (node[childKey]?.length) {
+        for (const child of node[childKey]) {
+            result.push(...getLeafNodes(child, childKey))
+        }
+    } else {
+        result.push(node)
+    }
+    return result
 }
