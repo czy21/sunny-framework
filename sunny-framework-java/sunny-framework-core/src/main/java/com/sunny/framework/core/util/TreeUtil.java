@@ -2,6 +2,7 @@ package com.sunny.framework.core.util;
 
 
 import com.sunny.framework.core.model.TreeNode;
+import com.sunny.framework.core.model.TreeNodeOperation;
 
 import java.util.*;
 import java.util.function.*;
@@ -120,4 +121,29 @@ public class TreeUtil {
         }
         return filteredTree;
     }
+
+    public static <V, T extends TreeNode<V>> List<T> getOperationNodes(List<T> t1, Predicate<T> includePredicate, Consumer<T> updateConsumer, List<T> t2) {
+
+        Set<V> includeNodeIds = t1.stream().filter(includePredicate).map(T::getId).collect(Collectors.toSet());
+
+        List<T> result = new ArrayList<>(t2);
+
+        result.forEach(t -> {
+            if (!includeNodeIds.contains(t.getId())) {
+                t.setOperation(TreeNodeOperation.DELETE);
+            } else {
+                t.setOperation(TreeNodeOperation.UPDATE);
+                updateConsumer.accept(t);
+            }
+        });
+        t1.stream()
+                .filter(t -> includeNodeIds.contains(t.getId()))
+                .filter(t -> result.stream().noneMatch(n -> Objects.equals(n.getId(), t.getId())))
+                .forEach(t -> {
+                    t.setOperation(TreeNodeOperation.INSERT);
+                    result.add(t);
+                });
+        return result;
+    }
+
 }

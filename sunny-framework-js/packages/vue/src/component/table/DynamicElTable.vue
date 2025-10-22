@@ -10,6 +10,7 @@
             show-overflow-tooltip
             :scroll="handleScroll"
   >
+    <el-table-column type="selection" :selectable="selectable" v-if="props.selectable"/>
     <dynamic-el-column :node="t" v-for="t in props.columns">
       <template #default="{ prop, scope }">
         <slot :name="prop" :=scope v-if="scope.column.params.custom"/>
@@ -60,6 +61,9 @@ const props = withDefaults(defineProps<TableProps>(), {
   defaultRowValue() {
     return {}
   },
+  selectable() {
+    return false
+  },
   columns: () => [],
   data: () => [],
   dict() {
@@ -86,6 +90,10 @@ const emit = defineEmits<TableEmits>()
 
 const tableRef = ref()
 const editRef = ref()
+
+const selectable = (row: any, index: number) => {
+  return true
+}
 
 const headerCellStyle = ({column}) => {
   return column.params?.style

@@ -49,6 +49,13 @@ public interface TreeNode<T> extends Comparable<TreeNode<T>> {
     default void setSort(Integer sort) {
     }
 
+    default TreeNodeOperation getOperation() {
+        return null;
+    }
+
+    default void setOperation(TreeNodeOperation operation) {
+    }
+
     @Override
     default int compareTo(TreeNode<T> o) {
         return ObjectUtils.compare(this.getSort(), o.getSort());

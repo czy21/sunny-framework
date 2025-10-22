@@ -29,4 +29,5 @@ const renderHeader = (node: TableColumn, scope: RenderRowData<any>) => {
   scope.column.params = node
   return scope.column.label
 }
+
 </script>

@@ -9,10 +9,11 @@ declare module 'element-plus' {
 }
 
 export interface TableProps {
-    defaultRowValue?: object,
-    columns: Array<TableColumn>,
-    data: Array<object>,
-    dict?: DictType,
+    defaultRowValue?: object
+    selectable?: boolean
+    columns: Array<TableColumn>
+    data: Array<object>
+    dict?: DictType
     subTotal?: Array<SubTotalType>
     rules?: { [key: string]: FormItemRule[] } | { [key: string]: VxeTableDefines.ValidatorRule[] }
     editable?: boolean
@@ -27,6 +28,7 @@ export interface TableProps {
 }
 
 export interface TableEmits {
+    'selectable': [row: any, index: number]
     'edit': [value: any, scope: any, dict: DictType]
     'edit-change': [value: any, scope: any, dict: DictType]
     'select-search': [value: any, scope: any, dict: DictType]
@@ -37,6 +39,7 @@ export interface TableColumn {
     prop: string
     name: string
     type?: string | "string" | "number" | "select"
+    selectable?: boolean
     parentProp?: string
     parentName?: string
     required?: boolean
