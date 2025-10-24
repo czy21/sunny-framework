@@ -4,6 +4,7 @@
             width="100%" height="100%"
             :data="props.data"
             :header-cell-style="headerCellStyle"
+            :cell-style="props.cellStyle"
             @cell-click="handleCell"
             :show-summary="props.showSummary"
             :summary-method="summaryMethod"
@@ -83,6 +84,11 @@ const props = withDefaults(defineProps<TableProps>(), {
   },
   showAddRow() {
     return false
+  },
+  cellStyle() {
+    return {
+      textAlign: 'center'
+    }
   }
 })
 

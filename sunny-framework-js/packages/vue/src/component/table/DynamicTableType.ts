@@ -25,6 +25,7 @@ export interface TableProps {
     pageSizes?: number[]
     pageLayout?: string
     total?: number
+    cellStyle?: Function | CSSProperties
 }
 
 export interface TableEmits {
