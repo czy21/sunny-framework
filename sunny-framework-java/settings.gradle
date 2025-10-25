@@ -1,6 +1,11 @@
 pluginManagement {
+    includeBuild("../sunny-framework-gradle")
+    def props = new Properties()
+    file("../sunny-framework-gradle/version.properties").withInputStream {
+        props.load(it)
+    }
     plugins {
-        id 'org.springframework.boot' version "3.4.0"
+        id 'org.springframework.boot' version props["springBootVersion"]
     }
 }
 
