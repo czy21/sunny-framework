@@ -10,12 +10,12 @@ import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.mybatis.generator.internal.util.StringUtility.isTrue;
 
 public class DomainPlugin extends PluginAdapter {
 
+    private boolean enabledMybatisPlus;
     private boolean enabledOpenApi3;
     private boolean enabledOpenapi3InModel;
     private boolean enabledSwagger;
@@ -29,7 +29,6 @@ public class DomainPlugin extends PluginAdapter {
 
     @Override
     public void initialized(IntrospectedTable introspectedTable) {
-
         String baseRecordType = introspectedTable.getBaseRecordType();
         if (!baseRecordType.endsWith("PO")) {
             baseRecordType += "PO";
@@ -39,6 +38,13 @@ public class DomainPlugin extends PluginAdapter {
 
     @Override
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        if (enabledMybatisPlus) {
+            Annotations annotation = Annotations.TABLE_NAME;
+            annotation.options.clear();
+            annotation.appendOptions("value", introspectedTable.getFullyQualifiedTable().getIntrospectedTableName());
+            topLevelClass.addImportedType(annotation.javaType);
+            topLevelClass.addAnnotation(annotation.asAnnotation());
+        }
         if (enabledOpenapi3InModel | enabledSwaggerInModel) {
             addOpenAPI(introspectedTable, topLevelClass);
         }
@@ -58,8 +64,16 @@ public class DomainPlugin extends PluginAdapter {
         }
         TopLevelClass apiClass = new TopLevelClass(context.getJavaModelGeneratorConfiguration().getTargetPackage() + ".dto." + oriClass.getType().getShortName().replace("PO", "DTO"));
         apiClass.setVisibility(JavaVisibility.PUBLIC);
-        oriClass.getImportedTypes().forEach(apiClass::addImportedType);
-        oriClass.getAnnotations().forEach(apiClass::addAnnotation);
+        List<String> excludeImportTypes = new ArrayList<>(Arrays.stream(LombokPlugin.Annotations.values()).filter(t -> t != LombokPlugin.Annotations.DATA).map(t -> t.javaType.getFullyQualifiedName()).toList());
+        excludeImportTypes.add(Annotations.TABLE_NAME.javaType.getFullyQualifiedName());
+        List<String> excludeAnnotation = new ArrayList<>(Arrays.stream(LombokPlugin.Annotations.values()).filter(t -> t != LombokPlugin.Annotations.DATA).map(t->t.name).toList());
+        excludeAnnotation.add(Annotations.TABLE_NAME.name);
+        oriClass.getImportedTypes().stream()
+                .filter(t -> !excludeImportTypes.contains(t.getFullyQualifiedName()))
+                .forEach(apiClass::addImportedType);
+        oriClass.getAnnotations().stream()
+                .filter(t -> excludeAnnotation.stream().noneMatch(t::startsWith))
+                .forEach(apiClass::addAnnotation);
         oriClass.getFields().forEach(apiClass::addField);
         apiClass.getMethods().forEach(apiClass::addMethod);
         addOpenAPI(introspectedTable, apiClass);
@@ -99,6 +113,8 @@ public class DomainPlugin extends PluginAdapter {
     @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);
+
+        enabledMybatisPlus = isTrue(properties.getProperty("mybatisPlus"));
         enabledOpenApi3 = isTrue(properties.getProperty("openapi3"));
         enabledOpenapi3InModel = isTrue(properties.getProperty("openapi3InModel"));
 
@@ -109,7 +125,7 @@ public class DomainPlugin extends PluginAdapter {
     }
 
     private enum Annotations {
-
+        TABLE_NAME("tableName", "@TableName", "com.baomidou.mybatisplus.annotation.TableName"),
         SCHEMA("schema", "@Schema", "io.swagger.v3.oas.annotations.media.Schema");
 
         private final String paramName;

@@ -25,7 +25,7 @@ public class LombokPlugin extends PluginAdapter {
      * LombokPlugin constructor
      */
     public LombokPlugin() {
-        annotations = new LinkedHashSet<Annotations>(Annotations.values().length);
+        annotations = new LinkedHashSet<>(Annotations.values().length);
     }
 
     /**
@@ -186,7 +186,7 @@ public class LombokPlugin extends PluginAdapter {
         }
     }
 
-    private enum Annotations {
+    public enum Annotations {
         DATA("data", "@Data", "lombok.Data"),
         BUILDER("builder", "@Builder", "lombok.Builder"),
         ALL_ARGS_CONSTRUCTOR("allArgsConstructor", "@AllArgsConstructor", "lombok.AllArgsConstructor"),
@@ -195,10 +195,10 @@ public class LombokPlugin extends PluginAdapter {
         TO_STRING("toString", "@ToString", "lombok.ToString");
 
 
-        private final String paramName;
-        private final String name;
-        private final FullyQualifiedJavaType javaType;
-        private final List<String> options;
+        public final String paramName;
+        public final String name;
+        public final FullyQualifiedJavaType javaType;
+        public final List<String> options;
 
 
         Annotations(String paramName, String name, String className) {

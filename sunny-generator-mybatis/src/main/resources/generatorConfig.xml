@@ -12,8 +12,9 @@
             <property name="accessors.chain" value="true"/>
         </plugin>
         <plugin type="com.sunny.generator.mybatis.plugins.DomainPlugin">
+            <property name="mybatisPlus" value="true"/>
             <property name="openapi3" value="true"/>
-            <property name="openapi3InModel" value="true"/>
+            <property name="openapi3InModel" value="false"/>
             <property name="openapiExcludeColumns" value="id,create_time,create_user,update_time,update_user,deleted"/>
         </plugin>
         <commentGenerator type="com.sunny.generator.mybatis.internal.CommentGenerator"/>
@@ -37,17 +38,23 @@
             <property name="useJSR310Types" value="true"/>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="generator.model" targetProject="src/main/java"/>
-        <sqlMapGenerator targetPackage="generator" targetProject="src/main/resources"/>
-        <javaClientGenerator type="XMLMAPPER" targetPackage="generator.mapper" targetProject="src/main/java"/>
+<!--        <javaModelGenerator targetPackage="generator.model" targetProject="src/main/java"/>-->
+<!--        <sqlMapGenerator targetPackage="generator" targetProject="src/main/resources"/>-->
+<!--        <javaClientGenerator type="XMLMAPPER" targetPackage="generator.mapper" targetProject="src/main/java"/>-->
 
-        <table tableName="sys_%"
-               enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" selectByExampleQueryId="true">
-            <domainObjectRenamingRule searchString="^Sys(.*)$" replaceString="$1"/>
-        </table>
+<!--        <table tableName="sys_%"-->
+<!--               enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" selectByExampleQueryId="true">-->
+<!--            <domainObjectRenamingRule searchString="^Sys(.*)$" replaceString="$1"/>-->
+<!--        </table>-->
 
-        <table tableName="sys_file" domainObjectName="FilePO" mapperName="FileMapper"
-               enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" selectByExampleQueryId="true">
+<!--        <table tableName="sys_file" domainObjectName="FilePO" mapperName="FileMapper"-->
+<!--               enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" selectByExampleQueryId="true">-->
+<!--        </table>-->
+
+<!--        use mybatis-->
+        <javaModelGenerator targetPackage="com.sunny.wx.unify.domain.model" targetProject="C:/Users/bruce/Desktop/dev/gitea-project/wx-unify/service/wx-unify-domain/src/main/java"/>
+
+        <table tableName="%">
         </table>
 
     </context>
