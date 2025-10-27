@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Sunny.Framework\Sunny.Framework.DB\Sunny.Framework.DB.csproj"/>
+        <ProjectReference Include="..\sunny-framework-dotnet\Sunny.Framework.DB\Sunny.Framework.DB.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
