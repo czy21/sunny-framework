@@ -1,15 +1,13 @@
 <template>
-  <el-form ref="formRef"
-           label-width="auto"
-           :model="formData"
-           :label-position="option.labelPosition">
+  <el-form ref="formRef" label-width="auto" :model="formData" :label-position="option.labelPosition">
     <el-row>
       <el-col :span="option.span" v-for="item in option.items">
         <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []">
-          <el-input v-if="item.type === 'input'" v-model="formData[item.prop]" :disabled="item.disabled" :placeholder="item.placeholder" clearable></el-input>
-          <el-input-number v-else-if="item.type === 'number'" v-model="formData[item.prop]" :disabled="item.disabled" controls-position="right"></el-input-number>
-          <el-date-picker v-else-if="item.type === 'date'" type="date" v-model="formData[item.prop]" :value-format="item.format"></el-date-picker>
-          <el-select v-else-if="item.type === 'select'" v-model="formData[item.prop]" :disabled="item.disabled" :placeholder="item.placeholder" clearable>
+          <el-input v-if="item.type === 'input'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable/>
+          <el-input v-else-if="item.type === 'password'" type="password" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable/>
+          <el-input-number v-else-if="item.type === 'number'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" controls-position="right"/>
+          <el-date-picker v-else-if="item.type === 'date'" type="date" v-model="formData[item.prop]" :value-format="item.format"/>
+          <el-select v-else-if="item.type === 'select'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable>
             <el-option v-for="opt in item.options" :label="opt.label" :value="opt.value"></el-option>
           </el-select>
           <slot :name="item.prop" v-else/>

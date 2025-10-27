@@ -146,4 +146,15 @@ public class TreeUtil {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <VS,VT, S extends TreeNode<VS>, T extends TreeNode<VT>> List<T> mapTo(List<S> sources, Function<S, T> stFunction) {
+        return sources.stream()
+                .map(s -> {
+                    T target = stFunction.apply(s);
+                    if (s.getChildren() != null && !s.getChildren().isEmpty()) {
+                        target.setChildren(mapTo((List<S>) s.getChildren(), stFunction));
+                    }
+                    return target;
+                }).toList();
+    }
 }
