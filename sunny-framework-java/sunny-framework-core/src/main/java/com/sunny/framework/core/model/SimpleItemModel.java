@@ -45,43 +45,43 @@ public class SimpleItemModel<T> implements TreeNode<T> {
     }
 
     @Override
-    public T getId() {
+    public T getKey() {
         return value;
     }
 
     @Override
-    public void setId(T id) {
-        this.value = id;
+    public void setKey(T key) {
+        this.value = key;
     }
 
     @Override
-    public T getParentId() {
+    public T getParentKey() {
         return parentValue;
     }
 
     @Override
-    public void setParentId(T parentId) {
-        this.parentValue = parentId;
+    public void setParentKey(T parentKey) {
+        this.parentValue = parentKey;
     }
 
     @Override
-    public List<T> getParentIds() {
+    public List<T> getParentKeys() {
         return this.parentValues;
     }
 
     @Override
-    public void setParentIds(List<T> parentIds) {
-        this.parentValues = parentIds;
+    public void setParentKeys(List<T> parentKeys) {
+        this.parentValues = parentKeys;
     }
 
     @Override
-    public List<T> getPathIds() {
+    public List<T> getPathKeys() {
         return pathValues;
     }
 
     @Override
-    public void setPathIds(List<T> pathIds) {
-        this.pathValues = pathIds;
+    public void setPathKeys(List<T> pathKeys) {
+        this.pathValues = pathKeys;
     }
 
     @SuppressWarnings("unchecked")

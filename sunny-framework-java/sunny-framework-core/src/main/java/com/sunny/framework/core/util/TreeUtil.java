@@ -12,13 +12,13 @@ import java.util.stream.Stream;
 public class TreeUtil {
 
     public static <V, T extends TreeNode<V>> void assemble(List<T> all) {
-        all.forEach(t -> t.setParentIds(getParentIds(all, t)));
+        all.forEach(t -> t.setParentKeys(getParentIds(all, t)));
     }
 
     public static <V, T extends TreeNode<V>> List<V> getParentIds(List<T> items, T node) {
         return items.stream()
-                .filter(t -> t.getId().equals(node.getParentId()))
-                .flatMap(t -> Stream.concat(getParentIds(items, t).stream(), Stream.of(node.getParentId())))
+                .filter(t -> t.getKey().equals(node.getParentKey()))
+                .flatMap(t -> Stream.concat(getParentIds(items, t).stream(), Stream.of(node.getParentKey())))
                 .collect(Collectors.toList());
     }
 
@@ -36,19 +36,19 @@ public class TreeUtil {
         T root = supplier.get();
 
         for (T t : all) {
-            if (t.getPathIds() == null) {
+            if (t.getPathKeys() == null) {
                 continue;
             }
             T current = root;
-            for (int i = 0; i < t.getPathIds().size(); i++) {
+            for (int i = 0; i < t.getPathKeys().size(); i++) {
                 current.setChildren(Optional.ofNullable(current.getChildren()).orElse(new ArrayList<>()));
-                V p = t.getPathIds().get(i);
-                T child = (T) current.getChildren().stream().filter(c -> Objects.equals(p, c.getId())).findFirst().orElse(null);
+                V p = t.getPathKeys().get(i);
+                T child = (T) current.getChildren().stream().filter(c -> Objects.equals(p, c.getKey())).findFirst().orElse(null);
                 if (child == null) {
                     child = supplier.get();
-                    child.setId(p);
-                    child.setParentId(current.getId());
-                    child.setParentIds(t.getPathIds().subList(0, i));
+                    child.setKey(p);
+                    child.setParentKey(current.getKey());
+                    child.setParentKeys(t.getPathKeys().subList(0, i));
                     child.setLevel(i + 1);
                     ((List<T>) current.getChildren()).add(child);
                 }
@@ -92,7 +92,7 @@ public class TreeUtil {
         node.setLevel(level);
 
         for (T t : all) {
-            if (Objects.equals(node.getId(), t.getParentId())) {
+            if (Objects.equals(node.getKey(), t.getParentKey())) {
                 buildChildren(all, t, decoNodeFunc, sortComparator, level + 1);
                 node.setChildren(Optional.ofNullable(node.getChildren()).orElse(new ArrayList<>()));
                 ((List<T>) node.getChildren()).add(t);
@@ -124,12 +124,12 @@ public class TreeUtil {
 
     public static <V, T extends TreeNode<V>> List<T> getOperationNodes(List<T> t1, Predicate<T> includePredicate, Consumer<T> updateConsumer, List<T> t2) {
 
-        Set<V> includeNodeIds = t1.stream().filter(includePredicate).map(T::getId).collect(Collectors.toSet());
+        Set<V> includeNodeIds = t1.stream().filter(includePredicate).map(T::getKey).collect(Collectors.toSet());
 
         List<T> result = new ArrayList<>(t2);
 
         result.forEach(t -> {
-            if (!includeNodeIds.contains(t.getId())) {
+            if (!includeNodeIds.contains(t.getKey())) {
                 t.setOperation(TreeNodeOperation.DELETE);
             } else {
                 t.setOperation(TreeNodeOperation.UPDATE);
@@ -137,8 +137,8 @@ public class TreeUtil {
             }
         });
         t1.stream()
-                .filter(t -> includeNodeIds.contains(t.getId()))
-                .filter(t -> result.stream().noneMatch(n -> Objects.equals(n.getId(), t.getId())))
+                .filter(t -> includeNodeIds.contains(t.getKey()))
+                .filter(t -> result.stream().noneMatch(n -> Objects.equals(n.getKey(), t.getKey())))
                 .forEach(t -> {
                     t.setOperation(TreeNodeOperation.INSERT);
                     result.add(t);

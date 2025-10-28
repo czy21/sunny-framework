@@ -6,28 +6,28 @@ import java.util.List;
 
 public interface TreeNode<T> extends Comparable<TreeNode<T>> {
 
-    T getId();
+    T getKey();
 
-    default void setId(T id) {
+    default void setKey(T key) {
     }
 
-    T getParentId();
+    T getParentKey();
 
-    default void setParentId(T parentId) {
+    default void setParentKey(T parentKey) {
     }
 
-    default List<T> getParentIds() {
+    default List<T> getParentKeys() {
         return null;
     }
 
-    default void setParentIds(List<T> parentIds) {
+    default void setParentKeys(List<T> parentKeys) {
     }
 
-    default List<T> getPathIds() {
+    default List<T> getPathKeys() {
         return null;
     }
 
-    default void setPathIds(List<T> pathIds) {
+    default void setPathKeys(List<T> pathKeys) {
     }
 
     default Integer getLevel() {

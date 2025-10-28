@@ -21,16 +21,16 @@ public class TreeUtilTest {
         });
         List<SimpleItemModel<String>> tree = TreeUtil.build(SimpleItemModel::new, items,
                 t -> {
-                    t.setParentIds(TreeUtil.getParentIds(items, t));
+                    t.setParentKeys(TreeUtil.getParentIds(items, t));
                 },
                 Comparator.comparing(SimpleItemModel::getSort)
         );
 
         List<SimpleItemModel<String>> filteredTree = TreeUtil.filter(SimpleItemModel::new, tree,false,
-                t -> "a3-2".equals(t.getId()),
+                t -> "a3-2".equals(t.getKey()),
                 (item, node) -> {
-                    node.setId(item.getId());
-                    node.setParentId(item.getParentId());
+                    node.setKey(item.getKey());
+                    node.setParentKey(item.getParentKey());
                     node.setLabel(item.getLabel());
                     System.out.println();
                 });
