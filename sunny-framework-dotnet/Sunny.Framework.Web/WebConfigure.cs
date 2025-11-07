@@ -1,5 +1,4 @@
 ﻿using System.Text.Encodings.Web;
-using System.Text.Json.Serialization;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpLogging;
@@ -14,12 +13,13 @@ using Nacos.V2.DependencyInjection;
 using NLog.Web;
 using Refit;
 using Sunny.Framework.Core.Json;
+using Sunny.Framework.NLog;
 
 namespace Sunny.Framework.Web;
 
 public static class WebConfigure
 {
-    public static IHostBuilder UseWebConfigure(this IHostBuilder builder)
+    public static IHostBuilder UseHostConfigure(this IHostBuilder builder)
     {
         builder.ConfigureAppConfiguration((Action<HostBuilderContext, IConfigurationBuilder>)((_, cfb) =>
         {
@@ -38,7 +38,7 @@ public static class WebConfigure
         return builder;
     }
 
-    public static IServiceCollection AddWebConfigure(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddHostConfigure(this IServiceCollection services, IConfiguration config)
     {
         var nacosConfigEnabled = config.GetValue("Nacos:Config:Enabled", false);
         if (nacosConfigEnabled)
@@ -47,6 +47,12 @@ public static class WebConfigure
         }
         
         services.AddHostedService<NLogConfigListener>();
+        return services;
+    } 
+    
+    public static IServiceCollection AddWebConfigure(this IServiceCollection services, IConfiguration config)
+    {
+        AddHostConfigure(services, config);
         
         services.AddHttpLogging(logging =>
         {

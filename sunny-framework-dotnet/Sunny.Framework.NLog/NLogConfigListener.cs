@@ -5,7 +5,7 @@ using NLog;
 using NLog.Config;
 using LogLevel = NLog.LogLevel;
 
-namespace Sunny.Framework.Web;
+namespace Sunny.Framework.NLog;
 
 public class NLogConfigListener(IOptionsMonitor<LoggerFilterOptions> logLevelOptions) : BackgroundService
 {
