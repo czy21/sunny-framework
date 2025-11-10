@@ -37,9 +37,10 @@ export interface TableEmits {
 }
 
 export interface TableColumn {
-    prop: string
+    prop?: string
     name: string
     type?: string | "string" | "number" | "select"
+    children?: TableColumn[]
     selectable?: boolean
     parentProp?: string
     parentName?: string
@@ -52,7 +53,6 @@ export interface TableColumn {
     rowTotal?: string
     colTotal?: boolean
     changeByProps?: string[]
-    heads?: (string | TableHead)[]
     width?: number | string
     fixed?: string
     remote?: boolean
