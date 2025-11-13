@@ -1,7 +1,7 @@
 <template>
   <el-form ref="formRef" label-width="auto" :model="formData" :label-position="option.labelPosition">
     <el-row>
-      <el-col :span="option.span" v-for="item in option.items">
+      <el-col :span="option.span" v-for="item in formItems">
         <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []">
           <el-input v-if="item.type === 'input'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable/>
           <el-input v-else-if="item.type === 'password'" type="password" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable/>
@@ -10,6 +10,9 @@
           <el-select v-else-if="item.type === 'select'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable>
             <el-option v-for="opt in item.options" :label="opt.label" :value="opt.value"></el-option>
           </el-select>
+          <el-radio-group v-else-if="item.type === 'radio'" v-model="formData[item.prop]">
+            <el-radio v-for="opt in item.options" :value="opt.value">{{ opt.label??opt.value }}</el-radio>
+          </el-radio-group>
           <slot :name="item.prop" v-else/>
         </el-form-item>
       </el-col>
@@ -23,7 +26,7 @@
 
 <script lang="ts" setup>
 import {DynamicFormOption} from './DynamicFormType.ts';
-import {computed, ref} from 'vue';
+import {computed, ref,watch} from 'vue';
 import type {FormInstance} from 'element-plus'
 
 const props = defineProps<{
@@ -39,6 +42,21 @@ const option = computed(() => ({
 }));
 
 const formData: Record<string, any> = computed(() => props.formData);
+
+const formItems = ref(null)
+
+watch(
+  [() => formData],
+  () => {
+    formItems.value = props.option.items.filter((t:any) => {
+      if (typeof t.show === 'function') {
+        return t.show(t, formData.value)
+      }
+      return t.show ?? true
+    })
+  },
+  { immediate: true, deep: true }
+)
 
 const emit = defineEmits<{
   'submit': []
