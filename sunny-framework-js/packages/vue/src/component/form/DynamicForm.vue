@@ -2,7 +2,19 @@
   <el-form ref="formRef" label-width="auto" :model="formData" :label-position="option.labelPosition">
     <el-row>
       <el-col :span="option.span" v-for="item in formItems">
-        <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []">
+        <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []" v-if="item.type === 'inputs'">
+          <el-input v-for="(v, i) in formData[item.prop]" :key="i" v-model="formData[item.prop][i]" style="margin-bottom: 5px;">
+            <template #append>
+              <el-button @click="delInput(item.prop, i)" :disabled="formData[item.prop].length <= 1" type="danger">
+                <el-icon><Delete/></el-icon>
+              </el-button>
+            </template>
+          </el-input>
+          <el-button @click="addInput(item.prop)" type="">
+            <el-icon><Plus/></el-icon>
+          </el-button>
+        </el-form-item>
+        <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []" v-else>
           <el-input v-if="item.type === 'input'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable/>
           <el-input v-else-if="item.type === 'password'" type="password" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable/>
           <el-input-number v-else-if="item.type === 'number'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" controls-position="right"/>
@@ -44,6 +56,17 @@ const option = computed(() => ({
 const formData: Record<string, any> = computed(() => props.formData);
 
 const formItems = ref(null)
+
+function addInput(prop:string) {
+  if (!Array.isArray(formData.value[prop])) formData.value[prop] = [];
+  formData.value[prop].push('');
+}
+
+function delInput(prop:string, index:number) {
+  if (formData.value[prop].length > 1) {
+    formData.value[prop].splice(index, 1);
+  }
+}
 
 watch(
   [() => formData],
