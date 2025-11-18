@@ -22,7 +22,7 @@
           <el-select v-else-if="item.type === 'select'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable>
             <el-option v-for="opt in item.options" :label="opt.label" :value="opt.value"></el-option>
           </el-select>
-          <el-radio-group v-else-if="item.type === 'radio'" v-model="formData[item.prop]">
+          <el-radio-group v-else-if="item.type === 'radio'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled">
             <el-radio v-for="opt in item.options" :value="opt.value">{{ opt.label??opt.value }}</el-radio>
           </el-radio-group>
           <slot :name="item.prop" v-else/>
