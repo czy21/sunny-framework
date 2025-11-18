@@ -18,3 +18,50 @@ export const downloadFile = (res: AxiosResponse, fileName?: string) => {
     a.click()
     URL.revokeObjectURL(url);
 }
+
+export const createPolling = ({ task, interval = 2000, timeout, immediate = true, stopCondition, continueOnError = false, }) => {
+
+    let timer: any = null;
+    let active = false;
+    let startTime = 0;
+
+    const stop = () => {
+        active = false;
+        clearTimeout(timer);
+        timer = null;
+    };
+
+    const exec = async () => {
+        if (!active) return;
+
+        if (timeout && Date.now() - startTime >= timeout) {
+            stop();
+            throw new Error("Polling timeout");
+        }
+
+        try {
+            const res = await task();
+
+            if (stopCondition?.(res)) {
+                stop();
+                return;
+            }
+        } catch (e) {
+            if (!continueOnError) {
+                stop();
+                throw e;
+            }
+        }
+
+        timer = setTimeout(exec, interval);
+    };
+
+    const start = () => {
+        if (active) return;
+        active = true;
+        startTime = Date.now();
+        immediate ? exec() : (timer = setTimeout(exec, interval));
+    };
+
+    return { start, stop, isActive: () => active };
+}

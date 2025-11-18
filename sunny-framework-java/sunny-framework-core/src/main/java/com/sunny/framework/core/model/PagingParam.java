@@ -5,6 +5,7 @@ public class PagingParam {
     public static final int DEFAULT_PAGE_SIZE = 10;
     private int page = DEFAULT_PAGE;
     private int pageSize = DEFAULT_PAGE_SIZE;
+    private String version;
 
     public int getPage() {
         return page;
@@ -24,5 +25,13 @@ public class PagingParam {
 
     public final int getOffset() {
         return (this.page - 1) * this.pageSize;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }
