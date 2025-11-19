@@ -1,7 +1,1 @@
-import app from './modules/app'
-import getters from "./getters";
-
-export {
-    app,
-    getters
-}
+export * from './modules/app'
