@@ -4,7 +4,7 @@ html, body, #app {
   padding: 0;
 }
 
-$layout_header_height: 20px;
+$layout_header_height: 40px;
 $aside_collapse_width: 60px;
 
 .el-container {
@@ -48,7 +48,7 @@ $aside_collapse_width: 60px;
   align-items: center;
 
   .collapse-btn {
-    line-height: 40px;
+    line-height: $layout_header_height;
     height: 100%;
     float: left;
     cursor: pointer;
