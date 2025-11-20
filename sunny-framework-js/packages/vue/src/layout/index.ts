@@ -1,5 +1,9 @@
-import Home from "./Home.vue";
+import Menu from './Menu.vue'
+import Aside from './Aside.vue'
+import Tab from './Tab.vue'
 
 export {
-    Home
+    Menu,
+    Aside,
+    Tab
 }
