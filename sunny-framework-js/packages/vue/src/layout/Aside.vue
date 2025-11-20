@@ -1,7 +1,7 @@
 <template>
   <el-aside :class="{'main-collapse':collapse}">
     <el-scrollbar>
-      企微工作台
+      <slot name="logo"/>
       <el-menu :collapse="collapse" background-color="#304156" text-color="#bfcbd9" active-text-color="#409EFF" :default-active="route.path" router>
         <Menu :collapse="collapse" :menu-tree="props.menus"/>
       </el-menu>

@@ -7,7 +7,7 @@
         </el-icon>
         <span>{{ t.name }}</span>
       </template>
-      <menu :menuTree="t.children"/>
+      <Menu :menuTree="t.children" :collapse="props.collapse"/>
     </el-sub-menu>
     <el-menu-item v-if="!t.children" :data="t" :index="t.path" :route="t.path">
       <el-icon v-if="t.icon">
@@ -22,6 +22,11 @@
 
 <script lang="ts" setup>
 import type {MenuModel} from './menu.ts'
+
+defineOptions({
+  name: 'Menu'
+})
+
 
 const props = defineProps<{
   collapse: boolean,
