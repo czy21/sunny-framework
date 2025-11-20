@@ -79,7 +79,7 @@ public class TreeUtil {
 
         buildChildren(all, root, decoNodeFunc, sortComparator, 0);
 
-        return (List<T>) root.getChildren();
+        return (List<T>) Optional.ofNullable(root.getChildren()).orElse(new ArrayList<>());
     }
 
     @SuppressWarnings("unchecked")
