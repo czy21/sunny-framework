@@ -1,16 +1,18 @@
 <template>
   <div class="tab-container">
     <div style="display: flex;gap: 8px;height: 100%;align-items: center;">
-      <el-tag v-for="t in visites"
-              :style="{cursor: 'pointer'}"
-              :key="t.path"
-              closable
-              :type="isActive(t)?'primary':'info'"
-              hit
-              @contextmenu.prevent="(event) => handleContextMenu(t, event)"
-              @close="closeSelected(t)"
-              @click="router.push(t.fullPath)">
-        {{ t.meta.title }}
+      <el-tag
+          v-for="t in visites"
+          :key="t.path + JSON.stringify(t.query || {})"
+          :style="{cursor: 'pointer'}"
+          closable
+          :type="isActive(t) ? 'primary' : 'info'"
+          hit
+          @contextmenu.prevent="(event) => handleContextMenu(t, event)"
+          @close="closeSelected(t)"
+          @click="router.push({ path: t.path, query: t.query })"
+      >
+        {{ t.query?.title || t.meta.title }}
       </el-tag>
     </div>
 
@@ -98,7 +100,7 @@ onMounted(() => {
 
 /** 判断是否激活 */
 function isActive(item) {
-  return item.path === route.path
+  return item.path === route.path && JSON.stringify(item.query || {}) === JSON.stringify(route.query || {});
 }
 
 /** 初始化 affix 标签 */
@@ -112,10 +114,11 @@ function initAffixTabs() {
 
 /** 添加当前路由为 tab */
 function addTab() {
-  if (route.name && route.meta?.title) {
-    tabStore.addItem(route)
+  if (route.name && (route.meta?.title || route.query?.title)) {
+    tabStore.addItem(route);
   }
 }
+
 
 /** 更新 fullPath */
 function switchToCurrentTab() {

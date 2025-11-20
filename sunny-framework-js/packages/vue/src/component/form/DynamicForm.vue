@@ -17,7 +17,7 @@
         <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []" v-else>
           <el-input v-if="item.type === 'input'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable/>
           <el-input v-else-if="item.type === 'password'" type="password" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable/>
-          <el-input-number v-else-if="item.type === 'number'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" controls-position="right"/>
+          <el-input-number v-else-if="item.type === 'number'" :min="item.min" :max="item.max" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" controls-position="right"/>
           <el-date-picker v-else-if="item.type === 'date'" type="date" v-model="formData[item.prop]" :value-format="item.format"/>
           <el-select v-else-if="item.type === 'select'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable>
             <el-option v-for="opt in item.options" :label="opt.label" :value="opt.value"></el-option>

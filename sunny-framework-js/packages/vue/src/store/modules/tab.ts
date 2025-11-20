@@ -1,78 +1,99 @@
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 
 export const useTabStore = defineStore('tab', {
     state: () => ({
-        // 页面中的完整 tab 列表（包含 title/meta/path 等）
-        visites: [],
+        visites: [] as Array<any>,
+        maxTabs: 10,
     }),
 
     actions: {
-        /** 只把 path 存到 localStorage */
         persist() {
-            localStorage.setItem('user_tabs', JSON.stringify(this.visites.map(v => v.path)))
+            localStorage.setItem(
+                'user_tabs',
+                JSON.stringify(this.visites.map(v => ({ path: v.path, query: v.query })))
+            );
         },
 
-        /** 从 localStorage 恢复，仅用 path 还原完整 route 对象 */
         restoreFromCache(router) {
-            const raw = localStorage.getItem('user_tabs')
-            if (!raw) return
+            const raw = localStorage.getItem('user_tabs');
+            if (!raw) return;
 
-            const paths = JSON.parse(raw)
-            const restored: any[] = []
+            const saved = JSON.parse(raw);
+            const restored: any[] = [];
 
-            paths.forEach(path => {
-                const r = router.resolve(path)
+            saved.forEach((item: any) => {
+                const r = router.resolve({ path: item.path, query: item.query });
                 if (r && r.name) {
                     restored.push({
                         ...r,
-                        title: r.meta?.title || 'no-name',
-                    })
+                        query: r.query,
+                        title: r.query.title || r.meta?.title || 'no-name',
+                    });
                 }
-            })
+            });
 
-            this.visites = restored
+            this.visites = restored;
         },
 
-        /** 添加标签 */
-        addItem(route) {
-            if (this.visites.some(v => v.path === route.path)) return
+        addItem(route: any) {
+            // 判断是否已存在同 path+query
+            const exists = this.visites.some(
+                v => v.path === route.path && JSON.stringify(v.query || {}) === JSON.stringify(route.query || {})
+            );
+            if (exists) return;
 
             this.visites.push({
                 ...route,
-                title: route.meta?.title || 'no-name',
-            })
-            this.persist()
+                title: route.query?.title || route.meta?.title || 'no-name',
+            });
+
+            // 超过最大 tab 数时，删除最早的非 affix tab
+            while (this.visites.length > this.maxTabs) {
+                const index = this.visites.findIndex(v => !v.meta?.affix);
+                if (index >= 0) {
+                    this.visites.splice(index, 1);
+                } else {
+                    // 全部是 affix，强制保留最大数量
+                    break;
+                }
+            }
+
+            this.persist();
         },
 
-        /** 删除单个 */
-        delItem(item) {
-            this.visites = this.visites.filter(v => v.path !== item.path)
-            this.persist()
+        delItem(item: any) {
+            this.visites = this.visites.filter(
+                v => !(v.path === item.path && JSON.stringify(v.query || {}) === JSON.stringify(item.query || {}))
+            );
+            this.persist();
         },
 
-        /** 关闭其他 */
-        delOtherItems(item) {
-            this.visites = this.visites.filter(v => v.meta?.affix || v.path === item.path)
-            this.persist()
+        delOtherItems(item: any) {
+            this.visites = this.visites.filter(
+                v => v.meta?.affix || (v.path === item.path && JSON.stringify(v.query || {}) === JSON.stringify(item.query || {}))
+            );
+            this.persist();
         },
 
-        /** 关闭右侧 */
-        delRightItems(item) {
-            const index = this.visites.findIndex(v => v.path === item.path)
-            this.visites = this.visites.filter((v, idx) => idx <= index || v.meta?.affix)
-            this.persist()
+        delRightItems(item: any) {
+            const index = this.visites.findIndex(
+                v => v.path === item.path && JSON.stringify(v.query || {}) === JSON.stringify(item.query || {})
+            );
+            this.visites = this.visites.filter((v, idx) => idx <= index || v.meta?.affix);
+            this.persist();
         },
 
-        /** 关闭左侧 */
-        delLeftItems(item) {
-            const index = this.visites.findIndex(v => v.path === item.path)
-            this.visites = this.visites.filter((v, idx) => idx >= index || v.meta?.affix)
-            this.persist()
+        delLeftItems(item: any) {
+            const index = this.visites.findIndex(
+                v => v.path === item.path && JSON.stringify(v.query || {}) === JSON.stringify(item.query || {})
+            );
+            this.visites = this.visites.filter((v, idx) => idx >= index || v.meta?.affix);
+            this.persist();
         },
-        /** 关闭全部 */
+
         delAllItems() {
-            this.visites = this.visites.filter(v => v.meta?.affix)
-            this.persist()
+            this.visites = this.visites.filter(v => v.meta?.affix);
+            this.persist();
         },
     },
-})
+});
