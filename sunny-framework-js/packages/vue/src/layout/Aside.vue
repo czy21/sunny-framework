@@ -9,7 +9,7 @@
       </el-menu>
     </el-scrollbar>
     <div class="aside-footer" style="padding: 12px;text-align: center;color: var(--el-color-white)">
-      {{version.version ?? 'dev'}}
+      {{ version.version ? `v${version.version}` : mode }}
     </div>
   </el-aside>
 </template>
@@ -23,6 +23,7 @@ import type {MenuModel} from "./menu.ts";
 const appStore = useAppStore()
 
 const version = JSON.parse(localStorage.getItem("version")|| "{}")
+const mode = import.meta.env.MODE
 
 const props = defineProps<{
   menus: Array<MenuModel>
