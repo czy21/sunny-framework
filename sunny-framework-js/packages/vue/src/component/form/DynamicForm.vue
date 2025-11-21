@@ -6,24 +6,28 @@
           <el-input v-for="(v, i) in formData[item.prop]" :key="i" v-model="formData[item.prop][i]" style="margin-bottom: 5px;">
             <template #append>
               <el-button @click="delInput(item.prop, i)" :disabled="formData[item.prop].length <= 1" type="danger">
-                <el-icon><Delete/></el-icon>
+                <el-icon>
+                  <Delete/>
+                </el-icon>
               </el-button>
             </template>
           </el-input>
           <el-button @click="addInput(item.prop)" type="">
-            <el-icon><Plus/></el-icon>
+            <el-icon>
+              <Plus/>
+            </el-icon>
           </el-button>
         </el-form-item>
         <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []" v-else>
           <el-input v-if="item.type === 'input'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable/>
           <el-input v-else-if="item.type === 'password'" type="password" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable/>
-          <el-input-number v-else-if="item.type === 'number'" :min="item.min" :max="item.max" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" controls-position="right"/>
+          <el-input-number v-else-if="item.type === 'number'" :min="item.min" :max="item.max" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" controls-position="right" style="width:100%"/>
           <el-date-picker v-else-if="item.type === 'date'" type="date" v-model="formData[item.prop]" :value-format="item.format"/>
           <el-select v-else-if="item.type === 'select'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled" :placeholder="item.placeholder" clearable>
             <el-option v-for="opt in item.options" :label="opt.label" :value="opt.value"></el-option>
           </el-select>
           <el-radio-group v-else-if="item.type === 'radio'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled">
-            <el-radio v-for="opt in item.options" :value="opt.value">{{ opt.label??opt.value }}</el-radio>
+            <el-radio v-for="opt in item.options" :value="opt.value">{{ opt.label ?? opt.value }}</el-radio>
           </el-radio-group>
           <slot :name="item.prop" v-else/>
         </el-form-item>
@@ -38,7 +42,7 @@
 
 <script lang="ts" setup>
 import {DynamicFormOption} from './DynamicFormType.ts';
-import {computed, ref,watch} from 'vue';
+import {computed, ref, watch} from 'vue';
 import type {FormInstance} from 'element-plus'
 
 const props = defineProps<{
@@ -57,28 +61,28 @@ const formData: Record<string, any> = computed(() => props.formData);
 
 const formItems = ref(null)
 
-function addInput(prop:string) {
+function addInput(prop: string) {
   if (!Array.isArray(formData.value[prop])) formData.value[prop] = [];
   formData.value[prop].push('');
 }
 
-function delInput(prop:string, index:number) {
+function delInput(prop: string, index: number) {
   if (formData.value[prop].length > 1) {
     formData.value[prop].splice(index, 1);
   }
 }
 
 watch(
-  [() => formData],
-  () => {
-    formItems.value = props.option.items.filter((t:any) => {
-      if (typeof t.show === 'function') {
-        return t.show(t, formData.value)
-      }
-      return t.show ?? true
-    })
-  },
-  { immediate: true, deep: true }
+    [() => formData],
+    () => {
+      formItems.value = props.option.items.filter((t: any) => {
+        if (typeof t.show === 'function') {
+          return t.show(t, formData.value)
+        }
+        return t.show ?? true
+      })
+    },
+    {immediate: true, deep: true}
 )
 
 const emit = defineEmits<{
