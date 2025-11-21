@@ -9,6 +9,8 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import VxeUITable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 
+import './static/var.css'
+
 const createApp = (rootComponent?: Component) => {
     const app = createAppVue(rootComponent || App)
     const pinia = createPinia()
