@@ -6,6 +6,9 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
+import VxeUIBase from 'vxe-pc-ui'
+import 'vxe-pc-ui/es/style.css'
+
 import VxeUITable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 
@@ -21,8 +24,7 @@ const createApp = (rootComponent?: Component) => {
     Object.entries(ElementPlusIconsVue).forEach(([k, v]) => app.component(k, v))
 
     app.use(ElementPlus, {size: 'default'} as any)
-    app.use(VxeUITable)
-
+    app.use(VxeUIBase).use(VxeUITable)
     return app
 }
 
