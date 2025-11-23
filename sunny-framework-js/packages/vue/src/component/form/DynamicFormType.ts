@@ -1,5 +1,6 @@
 export interface DynamicFormOption {
     labelPosition?: "top" | "bottom" | "left" | "right";
+    submitText?: string
     span?: string;
     items: DynamicFormItemOption[]
 }
