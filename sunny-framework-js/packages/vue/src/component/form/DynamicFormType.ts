@@ -1,17 +1,30 @@
+import type {FormItemRule} from 'element-plus'
 export interface DynamicFormOption {
     labelPosition?: "top" | "bottom" | "left" | "right";
     submitText?: string
+    cancelText?: string
     span?: string;
-    items: DynamicFormItemOption[]
+    items: DynamicFormItem[]
+}
+
+export interface DynamicFormItem {
+    prop: string
+    name: string
+    type: string
+    placeholder?: string
+    disabled?: boolean
+    options?: DynamicFormItemOption[]
+    props?: DynamicFormItemProps
+    format?: string
+    rules?: FormItemRule[]
 }
 
 export interface DynamicFormItemOption {
-    prop: string;
-    name: string;
-    type: string;
-    placeholder?: string;
-    disabled?: boolean;
-    options?: any[];
-    format?: string;
-    rules?: any[]
+    label: string | ((record?: any) => string)
+    value: any
+}
+
+export interface DynamicFormItemProps {
+    label: string | ((record?: any) => string)
+    value: any
 }

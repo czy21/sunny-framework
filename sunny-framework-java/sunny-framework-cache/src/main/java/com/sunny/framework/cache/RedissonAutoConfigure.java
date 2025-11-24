@@ -8,7 +8,6 @@ import org.redisson.api.RedissonRxClient;
 import org.redisson.config.*;
 import org.redisson.misc.RedisURI;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.data.redis.RedisConnectionDetails;
@@ -22,10 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.Resource;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.ReflectionUtils;
 
 import java.io.IOException;
@@ -42,33 +38,26 @@ import java.util.List;
 @EnableConfigurationProperties({RedissonProperties.class, RedisProperties.class})
 public class RedissonAutoConfigure {
 
-    @Autowired(required = false)
-    private List<RedissonAutoConfigureCustomizer> redissonAutoConfigureCustomizers;
+    private final ApplicationContext ctx;
 
-    @Autowired
-    private RedissonProperties redissonProperties;
+    private final RedissonProperties redissonProperties;
 
-    @Autowired
-    private RedisProperties redisProperties;
+    private final RedisProperties redisProperties;
 
-    @Autowired
-    private ApplicationContext ctx;
+    private final List<RedissonAutoConfigureCustomizer> redissonAutoConfigureCustomizers;
 
-    @Bean
-    @ConditionalOnMissingBean(name = "redisTemplate")
-    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();
-        template.setConnectionFactory(redisConnectionFactory);
-        return template;
+    public RedissonAutoConfigure(
+            ApplicationContext ctx,
+            RedisProperties redisProperties,
+            RedissonProperties redissonProperties,
+            ObjectProvider<RedissonAutoConfigureCustomizer> redissonAutoConfigureCustomizerObjectProvider
+    ) {
+        this.ctx = ctx;
+        this.redisProperties = redisProperties;
+        this.redissonProperties = redissonProperties;
+        this.redissonAutoConfigureCustomizers = redissonAutoConfigureCustomizerObjectProvider.orderedStream().toList();
     }
 
-    @Bean
-    @ConditionalOnMissingBean(StringRedisTemplate.class)
-    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        StringRedisTemplate template = new StringRedisTemplate();
-        template.setConnectionFactory(redisConnectionFactory);
-        return template;
-    }
 
     @Bean
     @Lazy
@@ -131,7 +120,7 @@ public class RedissonAutoConfigure {
         Integer timeout = null;
         if (timeoutValue instanceof Duration) {
             timeout = (int) ((Duration) timeoutValue).toMillis();
-        } else if (timeoutValue != null){
+        } else if (timeoutValue != null) {
             timeout = (Integer) timeoutValue;
         }
 
@@ -227,7 +216,7 @@ public class RedissonAutoConfigure {
             }
             initSSL(c);
         } else if ((clusterMethod != null && ReflectionUtils.invokeMethod(clusterMethod, redisProperties) != null)
-                    || isCluster) {
+                || isCluster) {
 
             String[] nodes = {};
             if (clusterMethod != null && ReflectionUtils.invokeMethod(clusterMethod, redisProperties) != null) {

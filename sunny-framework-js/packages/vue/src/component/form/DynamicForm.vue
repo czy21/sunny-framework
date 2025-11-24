@@ -29,13 +29,16 @@
           <el-radio-group v-else-if="item.type === 'radio'" v-model="formData[item.prop]" :disabled="typeof item.disabled === 'function'?item.disabled():item.disabled">
             <el-radio v-for="opt in item.options" :value="opt.value">{{ opt.label ?? opt.value }}</el-radio>
           </el-radio-group>
+          <el-tag v-else-if="item.type === 'tag'" v-for="t in formData[item.prop]" :key="t[item.options['value']]" closable @close="(e:any)=>handleTagClose(e,item,t)">
+            {{ getTagLabel(item, t) }}
+          </el-tag>
           <slot :name="item.prop" v-else/>
         </el-form-item>
       </el-col>
     </el-row>
     <el-form-item>
       <el-button type="primary" @click="handleSubmit">{{ option.submitText ?? '保存' }}</el-button>
-      <el-button @click="handleCancel">取消</el-button>
+      <el-button @click="handleCancel">{{ option.cancelText ?? '取消'}}</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -98,6 +101,15 @@ const handleSubmit = () => {
 
 const handleCancel = () => {
   emit('cancel');
+}
+
+const getTagLabel = (item, val) => {
+  const label = item.options['label']
+  return typeof label === 'function' ? label(val) : val[label]
+}
+
+const handleTagClose = (e, item, val) => {
+  formData.value[item.prop] = formData.value[item.prop].filter(t => t[item.options['value']] !== val[item.options['value']])
 }
 
 defineExpose({
