@@ -36,7 +36,7 @@ dependencyManagement {
 
         dependency "io.minio:minio:8.5.11"
         dependency "com.aliyun.oss:aliyun-sdk-oss:3.17.4"
-        dependency "com.xuxueli:xxl-job-core:2.4.1"
+        dependency "com.xuxueli:xxl-job-core:3.2.0"
         dependency "org.mapstruct:mapstruct:1.5.5.Final"
         dependency "org.mapstruct:mapstruct-processor:1.5.5.Final"
         dependency "org.projectlombok:lombok-mapstruct-binding:0.2.0"

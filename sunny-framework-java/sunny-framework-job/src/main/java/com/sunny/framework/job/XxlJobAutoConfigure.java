@@ -15,9 +15,9 @@ import org.springframework.context.annotation.PropertySource;
 @EnableConfigurationProperties(XxlJobProperties.class)
 @Configuration
 public class XxlJobAutoConfigure {
-    private static final Logger logger = LoggerFactory.getLogger(XxlJobProperties.class);
+    private static final Logger logger = LoggerFactory.getLogger(XxlJobAutoConfigure.class);
 
-    private XxlJobProperties properties;
+    private final XxlJobProperties properties;
 
     public XxlJobAutoConfigure(XxlJobProperties properties) {
         this.properties = properties;
@@ -25,7 +25,6 @@ public class XxlJobAutoConfigure {
 
     @Bean
     public XxlJobSpringExecutor xxlJobExecutor() {
-        logger.info(">>>>>>>>>>> xxl-job config init.");
         XxlJobSpringExecutor xxlJobSpringExecutor = new XxlJobSpringExecutor();
         xxlJobSpringExecutor.setAdminAddresses(properties.getAdmin().getAddresses());
         xxlJobSpringExecutor.setAccessToken(properties.getAccessToken());

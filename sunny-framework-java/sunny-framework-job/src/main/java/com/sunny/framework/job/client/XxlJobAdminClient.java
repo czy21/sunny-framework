@@ -1,0 +1,32 @@
+package com.sunny.framework.job.client;
+
+import com.xxl.job.core.biz.model.ReturnT;
+import com.sunny.framework.job.model.XxlJobInfo;
+import feign.Response;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@FeignClient(name = "XxlJobAdminClient", url = "${xxl.job.admin.addresses:}")
+public interface XxlJobAdminClient {
+
+    @PostMapping(path = "/auth/doLogin")
+    Response login(@RequestParam("userName") String userName, @RequestParam("password") String password);
+
+    @RequestMapping("/jobinfo/add")
+    ReturnT<String> jobInfoAdd(@RequestHeader("Cookie") String cookie, XxlJobInfo jobInfo);
+
+    @RequestMapping("/jobinfo/update")
+    ReturnT<Void> jobInfoUpdate(@RequestHeader("Cookie") String cookie, XxlJobInfo jobInfo);
+
+    @RequestMapping("/jobinfo/remove")
+    ReturnT<Void> jobInfoRemove(@RequestHeader("Cookie") String cookie,  @RequestParam("id") int id);
+
+    @RequestMapping("/jobinfo/start")
+    ReturnT<Void> jobInfoStart(@RequestHeader("Cookie") String cookie,  @RequestParam("id") int id);
+
+    @RequestMapping("/jobinfo/stop")
+    ReturnT<Void> jobInfoStop(@RequestHeader("Cookie") String cookie,  @RequestParam("id") int id);
+}
