@@ -5,6 +5,7 @@
   "main": "index.ts",
   "module": "index.ts",
   "dependencies": {
+    "@breejs/later": "^4.2.0",
     "@element-plus/icons-vue": "^2.3.2",
     "cron-parser": "^5.4.0",
     "element-plus": "^2.11.8",
