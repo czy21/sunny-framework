@@ -37,6 +37,7 @@
         </el-form-item>
       </el-col>
     </el-row>
+    <slot name="footer"/>
     <el-form-item>
       <el-button type="primary" @click="handleSubmit">{{ option.submitText ?? '保存' }}</el-button>
       <el-button @click="handleCancel">{{ option.cancelText ?? '取消' }}</el-button>
