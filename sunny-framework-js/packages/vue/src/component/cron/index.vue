@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, watch} from 'vue'
+import {ref, computed, watch} from 'vue'
 import {ElMessage} from 'element-plus'
 import later from '@breejs/later'
 
@@ -79,48 +79,44 @@ const props = withDefaults(
       modelValue?: string
       editable?: boolean
     }>(),
-    {
-      modelValue: '',
-      editable: false
-    }
+    {modelValue: '', editable: false}
 )
 
 const emit = defineEmits(['update:modelValue', 'change'])
 
+// 显示控制
 const visible = ref(false)
-const modes = ref<any[]>([
+
+// 模式
+const modes = ref([
   {
     label: '指定时间',
     value: 'dateTime',
     reset: () => {
       dateTime.value = ''
     },
-    validate: () => {
-      return true
-    }
+    validate: () => true
   },
   {
     label: '每天',
     value: 'day',
     reset: () => {
-      period.value = 'morning'
+      period.value = 'morning';
       time.value = period0.morning
     },
-    validate: () => {
-      return true
-    }
+    validate: () => true
   },
   {
     label: '每周',
     value: 'week',
     reset: () => {
-      period.value = 'morning'
-      time.value = period0.morning
+      period.value = 'morning';
+      time.value = period0.morning;
       week.value = ['1']
     },
     validate: () => {
       if (week.value.length === 0) {
-        ElMessage.warning('每周任务必须至少选择一个星期')
+        ElMessage.warning('每周任务必须至少选择一个星期');
         return false
       }
       return true
@@ -130,20 +126,21 @@ const modes = ref<any[]>([
     label: '每月',
     value: 'month',
     reset: () => {
-      period.value = 'morning'
-      time.value = period0.morning
+      period.value = 'morning';
+      time.value = period0.morning;
       month.value = [1]
     },
     validate: () => {
       if (month.value.length === 0) {
-        ElMessage.warning('每月任务必须至少选择一个日期')
+        ElMessage.warning('每月任务必须至少选择一个日期');
         return false
       }
       return true
     }
-  },
+  }
 ])
 
+// 内部状态
 const mode = ref<'day' | 'week' | 'month' | 'dateTime' | ''>('')
 const period = ref<'midnight' | 'morning' | 'afternoon' | 'evening' | ''>('')
 const time = ref('')
@@ -151,18 +148,19 @@ const week = ref<string[]>([])
 const month = ref<number[]>([])
 const dateTime = ref('')
 
+// 选项
 const weekdays = [
   {label: '周一', value: '1'}, {label: '周二', value: '2'}, {label: '周三', value: '3'},
-  {label: '周四', value: '4'}, {label: '周五', value: '5'}, {label: '周六', value: '6'}, {label: '周日', value: '0'},
+  {label: '周四', value: '4'}, {label: '周五', value: '5'}, {label: '周六', value: '6'}, {label: '周日', value: '0'}
 ]
 
-const period0: any = {midnight: '00:00', morning: '08:00', afternoon: '12:00', evening: '18:00'}
-const period1: any = {midnight: '07:59', morning: '11:59', afternoon: '17:59', evening: '23:59'}
+const period0: Record<string, string> = {midnight: '00:00', morning: '08:00', afternoon: '12:00', evening: '18:00'}
+const period1: Record<string, string> = {midnight: '07:59', morning: '11:59', afternoon: '17:59', evening: '23:59'}
 
 const onWeekClear = () => week.value = ['1']
 const onMonthClear = () => month.value = [1]
 
-// display
+// ----- display computed -----
 const cronLabel = computed(() => {
   if (!mode.value) return ''
   if (mode.value === 'day') return `每天 ${time.value}`
@@ -193,7 +191,7 @@ const cronValue = computed(() => {
   return ''
 })
 
-// 计算 nextRuns
+// ----- nextRuns -----
 function quartzToLater(cron: string) {
   const parts = cron.trim().split(/\s+/)
   if (parts.length < 6) return null
@@ -217,52 +215,63 @@ const nextRuns = computed(() => {
   }
 })
 
+// ----- methods -----
 const open = () => {
-  visible.value = true
-  if (!props.modelValue) {
-    mode.value = modes.value[0].value
-  }
+  visible.value = true;
+  if (!props.modelValue) resetAll()
 }
-
 const close = () => visible.value = false
-
-const clear = () => mode.value = modes.value[0].value && modes.value[0].reset()
-
+const clear = () => resetAll()
 const confirm = () => {
-  if (!modes.value.find(t => t.value == mode.value)?.validate()) return
+  const validate = modes.value.find(t => t.value === mode.value)?.validate()
+  if (!validate) return
   emit('update:modelValue', cronValue.value)
   emit('change', cronValue.value)
   close()
 }
 
-const handleTabChange = (tab) => modes.value.forEach(t => t.reset())
+const handleTabChange = () => modes.value.forEach(t => t.reset())
 
+// ----- helper -----
+function resetAll() {
+  modes.value[0].reset();
+  mode.value = modes.value[0].value
+}
+
+function getPeriodFromTime(t: string) {
+  const h = Number(t.split(':')[0])
+  if (h < 8) return 'midnight'
+  if (h < 12) return 'morning'
+  if (h < 18) return 'afternoon'
+  return 'evening'
+}
+
+// ----- watch modelValue -----
 watch(() => props.modelValue, val => {
-  if (!val) return
+  if (!val) return resetAll()
   const p = val.split(' ')
-  if (p.length < 6) return
-  const [sec, min, hour, day, mon, week] = p
+  if (p.length < 6) return resetAll()
+  const [sec, min, hour, day, mon, weekStr] = p
 
-  if (day === '*' && mon === '*' && week === '?') {
+  if (day === '*' && mon === '*' && weekStr === '?') {
     mode.value = 'day';
     time.value = `${hour}:${min}`;
-    period.value = 'morning'
+    period.value = getPeriodFromTime(time.value)
   } else if (day === '?' && mon === '*') {
     mode.value = 'week';
-    week.value = week.split(',').map(w => w === '1' ? '0' : String(Number(w) - 1));
+    week.value = weekStr.split(',').map(w => w === '1' ? '0' : String(Number(w) - 1))
     time.value = `${hour}:${min}`;
-    period.value = 'morning'
-  } else if (mon === '*' && week === '?') {
+    period.value = getPeriodFromTime(time.value)
+  } else if (mon === '*' && weekStr === '?') {
     mode.value = 'month';
-    month.value = day.split(',').map(Number);
+    month.value = day.split(',').map(Number)
     time.value = `${hour}:${min}`;
-    period.value = 'morning'
+    period.value = getPeriodFromTime(time.value)
   } else {
-    mode.value = 'dateTime';
+    mode.value = 'dateTime'
     dateTime.value = `${new Date().getFullYear()}-${String(mon).padStart(2, '0')}-${String(day).padStart(2, '0')} ${hour}:${min}`
   }
 }, {immediate: true})
-
 </script>
 
 <style scoped>
