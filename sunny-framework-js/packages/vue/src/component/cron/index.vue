@@ -2,7 +2,10 @@
   <el-tooltip ref="popperRef" :visible="visible" effect="light" pure trigger="click" role="dialog" teleported class="cron-picker-popper" placement="bottom-start" :hide-after="0" persistent>
 
     <template #default>
-      <el-input v-model="cronLabel" readonly placeholder="选择定时任务" @click.stop="open" class="cron-picker-input"/>
+      <el-input v-model="cronLabel" readonly placeholder="选择定时任务" @click.stop="open" class="cron-picker-input" v-if="props.editable"/>
+      <span v-else>
+        {{ cronLabel }}
+      </span>
     </template>
 
     <template #content>
@@ -71,7 +74,17 @@ import later from '@breejs/later'
 
 later.date.localTime()
 
-const props = defineProps({modelValue: String})
+const props = withDefaults(
+    defineProps<{
+      modelValue?: string
+      editable?: boolean
+    }>(),
+    {
+      modelValue: '',
+      editable: false
+    }
+)
+
 const emit = defineEmits(['update:modelValue', 'change'])
 
 const visible = ref(false)

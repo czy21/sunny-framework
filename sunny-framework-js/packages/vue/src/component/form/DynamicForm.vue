@@ -1,7 +1,7 @@
 <template>
   <el-form ref="formRef" label-width="auto" :model="formData" :label-position="option.labelPosition">
-    <el-row>
-      <el-col :span="option.span" v-for="item in formItems">
+    <el-row :gutter="10">
+      <el-col v-for="item in formItems" :span="option.span">
         <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []" v-if="item.type === 'inputs'">
           <el-input v-for="(v, i) in formData[item.prop]" :key="i" v-model="formData[item.prop][i]" style="margin-bottom: 5px;">
             <template #append>
@@ -32,7 +32,7 @@
           <el-tag v-else-if="item.type === 'tag'" v-for="t in formData[item.prop]" :key="t[item.options['value']]" closable @close="(e:any)=>handleTagClose(e,item,t)">
             {{ getTagLabel(item, t) }}
           </el-tag>
-          <Cron v-else-if="item.type === 'cron'" v-model="formData[item.prop]" :disabled="getDisabled(item)"/>
+          <Cron v-else-if="item.type === 'cron'" v-model="formData[item.prop]" :disabled="getDisabled(item)" editable/>
           <slot :name="item.prop" v-else/>
         </el-form-item>
       </el-col>

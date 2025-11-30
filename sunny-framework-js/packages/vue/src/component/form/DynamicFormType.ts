@@ -1,9 +1,11 @@
 import type {FormItemRule} from 'element-plus'
+
 export interface DynamicFormOption {
     labelPosition?: "top" | "bottom" | "left" | "right";
     submitText?: string
     cancelText?: string
-    span?: string;
+    span?: string
+    cols?: number
     items: DynamicFormItem[]
 }
 
