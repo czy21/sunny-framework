@@ -68,7 +68,6 @@ const sendMessage = () => {
 }
 
 const handleKeyDown = (event: KeyboardEvent) => {
-  console.log(event)
   if (event.key === 'Enter') {
     if (event.shiftKey) {
       return;
