@@ -20,6 +20,17 @@
         </el-form-item>
         <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []" v-else>
           <el-input v-if="item.type === 'input'" v-model="formData[item.prop]" :disabled="getDisabled(item)" :placeholder="item.placeholder" clearable/>
+          <el-input-tag v-if="item.type === 'input-tag'" v-model="formData[item.prop]" :disabled="getDisabled(item)" :placeholder="item.placeholder" clearable
+                        @keydown="(e:any)=> item.props?.keydownPrevent && e.preventDefault()"
+                        collapse-tags collapse-tags-tooltip
+                        :max-collapse-tags="item.props?.maxCollapseTags ?? 1"
+                        :tag-type="item.props?.tagType ?? 'primary'"
+                        @remove-tag="(value:any,index:number)=>handleInputRemoveTag(item,value,index)"
+          >
+            <template #tag="scope">
+              <span>{{ getInputTagLabel(item, scope.value) }}</span>
+            </template>
+          </el-input-tag>
           <el-input v-else-if="item.type === 'password'" type="password" v-model="formData[item.prop]" :disabled="getDisabled(item)" :placeholder="item.placeholder" clearable/>
           <el-input-number v-else-if="item.type === 'number'" :min="item.min" :max="item.max" v-model="formData[item.prop]" :disabled="getDisabled(item)" controls-position="right" style="width:100%"/>
           <el-date-picker v-else-if="item.type === 'date'" type="date" v-model="formData[item.prop]" :value-format="item.format"/>
@@ -29,7 +40,7 @@
           <el-radio-group v-else-if="item.type === 'radio'" v-model="formData[item.prop]" :disabled="getDisabled(item)">
             <el-radio v-for="opt in item.options" :value="opt.value">{{ opt.label ?? opt.value }}</el-radio>
           </el-radio-group>
-          <el-tag v-else-if="item.type === 'tag'" v-for="t in formData[item.prop]" :key="t[item.options['value']]" closable @close="(e:any)=>handleTagClose(e,item,t)">
+          <el-tag v-else-if="item.type === 'tag'" v-for="t in formData[item.prop]" :key="t[item.props['value']]" closable @close="(e:any)=>handleTagClose(e,item,t)">
             {{ getTagLabel(item, t) }}
           </el-tag>
           <Cron v-else-if="item.type === 'cron'" v-model="formData[item.prop]" :disabled="getDisabled(item)" editable/>
@@ -46,7 +57,7 @@
 </template>
 
 <script lang="ts" setup>
-import {DynamicFormOption} from './DynamicFormType.ts';
+import {DynamicFormItem, DynamicFormOption} from './DynamicFormType.ts';
 import {computed, ref, watch} from 'vue';
 import type {FormInstance} from 'element-plus'
 import Cron from '../cron/index.vue'
@@ -65,7 +76,7 @@ const option = computed(() => ({
 
 const formData: Record<string, any> = computed(() => props.formData);
 
-const formItems = ref(null)
+const formItems = computed(() => props.option.items.filter(t => (typeof t.show === 'function' ? t.show(t, formData.value) : t.show ?? true)));
 
 function addInput(prop: string) {
   if (!Array.isArray(formData.value[prop])) formData.value[prop] = [];
@@ -78,22 +89,9 @@ function delInput(prop: string, index: number) {
   }
 }
 
-function getDisabled(item) {
+function getDisabled(item: DynamicFormItem) {
   return typeof item.disabled === 'function' ? item.disabled() : item.disabled
 }
-
-watch(
-    [() => formData],
-    () => {
-      formItems.value = props.option.items.filter((t: any) => {
-        if (typeof t.show === 'function') {
-          return t.show(t, formData.value)
-        }
-        return t.show ?? true
-      })
-    },
-    {immediate: true, deep: true}
-)
 
 const emit = defineEmits<{
   'submit': []
@@ -110,14 +108,45 @@ const handleCancel = () => {
   emit('cancel');
 }
 
+const getInputTagLabel = (item: DynamicFormItem, val: any) => {
+  const label = item.props['label']
+  return typeof label === 'function' ? label(val) : val[label]
+}
+
+const handleInputRemoveTag = (item, val, index) => {
+  formData.value[item.prop] = formData.value[item.prop].filter(t => t[item.props['value']] !== val[item.props['value']])
+}
+
 const getTagLabel = (item, val) => {
-  const label = item.options['label']
+  const label = item.props['label']
   return typeof label === 'function' ? label(val) : val[label]
 }
 
 const handleTagClose = (e, item, val) => {
-  formData.value[item.prop] = formData.value[item.prop].filter(t => t[item.options['value']] !== val[item.options['value']])
+  formData.value[item.prop] = formData.value[item.prop].filter(t => t[item.props['value']] !== val[item.props['value']])
 }
+
+props.option.items
+    .filter(t => t.type === 'input-tag')
+    .forEach(t => {
+      watch(
+          () => formData.value[t.prop],
+          (arrNew, arrOld) => {
+            if (!Array.isArray(arrNew)) return;
+
+            const map = new Map();
+            arrNew.forEach(v => map.set(v[t.props.value], v));
+            const uniqueArr = Array.from(map.values());
+
+            const changed = !arrOld || arrOld.length !== uniqueArr.length || arrOld.some((v, i) => v[t.props.value] !== uniqueArr[i][t.props.value]);
+
+            if (changed) {
+              formData.value[t.prop] = uniqueArr;
+            }
+          },
+          {deep: true}
+      );
+    });
 
 defineExpose({
   formRef

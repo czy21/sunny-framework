@@ -14,7 +14,7 @@ export interface DynamicFormItem {
     name: string
     type: string
     placeholder?: string
-    disabled?: boolean
+    disabled?: boolean | ((record?: any) => boolean)
     options?: DynamicFormItemOption[]
     props?: DynamicFormItemProps
     format?: string
