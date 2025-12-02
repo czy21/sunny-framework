@@ -1,6 +1,6 @@
 <template>
   <div :class="['bubble-wrapper', role]">
-    <el-popover trigger="hover" :placement="role === 'sender' ? 'left-start' : 'right-start'" :popper-style="{ minWidth: '0px', width: 'auto', padding: '2px' }">
+    <el-popover pure trigger="hover" :placement="role === 'sender' ? 'left-start' : 'right-start'" :popper-style="{ minWidth: '0px', width: 'auto' }">
       <template #default>
         <el-button-group direction="horizontal" size="small" v-if="editable">
           <el-button plain :icon="IconEdit" @click="handleEdit"/>

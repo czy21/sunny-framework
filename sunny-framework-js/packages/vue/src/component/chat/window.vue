@@ -1,6 +1,5 @@
 <template>
-
-  <div style="height: 500px">
+  <div :style="{width:'100%',height:props.height}">
     <DynamicScroller ref="scroller" :items="props.messages" :min-item-size="50" style="height: 100%">
       <template #default="{ item, index, active }">
         <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.data[0].text]" :data-index="index" :data-active="active" style="padding-bottom: 4px">
@@ -9,19 +8,23 @@
       </template>
     </DynamicScroller>
   </div>
-  <el-divider/>
-  <el-input v-model="content" type="textarea" :rows="5" @keydown="handleKeyDown"/>
+<!--  <el-divider/>-->
+  <el-input v-model="content" type="textarea" placeholder="输入消息..." :rows="3" @keydown="handleKeyDown"/>
 </template>
 
 <script setup lang="ts">
 import {nextTick, ref, watch} from "vue";
 import ChatMessage from './message.vue';
 
-const props = defineProps({
-  modelValue: String,
-  messages: Array,
-  editable: Boolean
-});
+const props = withDefaults(
+    defineProps<{
+      modelValue?: string,
+      messages?: any[],
+      editable: boolean,
+      height?: string
+    }>(),
+    {modelValue: '', messages: [], editable: false, height: "300px"}
+)
 
 const emit = defineEmits(["update:messages", "change"]);
 

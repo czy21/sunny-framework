@@ -1,7 +1,7 @@
 <template>
   <el-form ref="formRef" label-width="auto" :model="formData" :label-position="option.labelPosition">
     <el-row :gutter="10">
-      <el-col v-for="item in formItems" :span="option.span">
+      <el-col v-for="item in formItems" :span="item.span ?? option.span">
         <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []" v-if="item.type === 'inputs'">
           <el-input v-for="(v, i) in formData[item.prop]" :key="i" v-model="formData[item.prop][i]" style="margin-bottom: 5px;">
             <template #append>
@@ -49,9 +49,9 @@
       </el-col>
     </el-row>
     <slot name="footer"/>
-    <el-form-item>
-      <el-button type="primary" @click="handleSubmit">{{ option.submitText ?? '保存' }}</el-button>
-      <el-button @click="handleCancel">{{ option.cancelText ?? '取消' }}</el-button>
+    <el-form-item v-if="option.submitShow">
+      <el-button type="primary" @click="handleSubmit">{{ option.submitText }}</el-button>
+      <el-button @click="handleCancel">{{ option.cancelText }}</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -68,9 +68,12 @@ const props = defineProps<{
 }>();
 
 const option = computed(() => ({
+  submitShow: true,
+  submitText: "保存",
+  cancelText: "取消",
   labelPosition: 'right',
   span: 12,
-  list: [],
+  items: [],
   ...props.option,
 }));
 

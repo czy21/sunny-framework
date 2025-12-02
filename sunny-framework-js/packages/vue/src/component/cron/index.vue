@@ -1,5 +1,5 @@
 <template>
-  <el-tooltip ref="popperRef" :visible="visible" effect="light" pure trigger="click" role="dialog" teleported class="cron-picker-popper" placement="bottom-start" :hide-after="0" persistent>
+  <el-tooltip ref="popperRef" :visible="visible" effect="light" pure trigger="click">
 
     <template #default>
       <el-input v-model="cronLabel" readonly placeholder="选择定时任务" @click.stop="open" class="cron-picker-input" v-if="props.editable"/>
@@ -9,7 +9,7 @@
     </template>
 
     <template #content>
-      <div class="cron-panel" @mousedown.stop>
+      <div class="cron-panel" v-if="props.editable">
         <el-tabs v-model="mode" tab-position="top" class="cron-tabs" @tab-change="handleTabChange">
           <el-tab-pane :label="t.label" :name="t.value" v-for="t in modes" :key="t.value">
 

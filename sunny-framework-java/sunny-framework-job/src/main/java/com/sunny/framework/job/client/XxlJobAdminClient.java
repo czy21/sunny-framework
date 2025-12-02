@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @FeignClient(name = "XxlJobAdminClient", url = "${xxl.job.admin.addresses:}")
 public interface XxlJobAdminClient {
 
@@ -31,4 +33,9 @@ public interface XxlJobAdminClient {
 
     @RequestMapping("/jobinfo/stop")
     ReturnT<Void> jobInfoStop(@RequestHeader("Cookie") String cookie, @RequestParam("id") int id);
+
+    @RequestMapping("/jobinfo/nextTriggerTime")
+    ReturnT<List<String>> nextTriggerTime(@RequestHeader("Cookie") String cookie,
+                                          @RequestParam("scheduleType") String scheduleType,
+                                          @RequestParam("scheduleConf") String scheduleConf);
 }
