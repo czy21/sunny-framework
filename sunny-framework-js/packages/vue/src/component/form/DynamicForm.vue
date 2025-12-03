@@ -3,7 +3,7 @@
     <el-row :gutter="10">
       <el-col v-for="item in formItems" :span="item.span ?? option.span">
         <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []" v-if="item.type === 'inputs'">
-          <el-input v-for="(v, i) in formData[item.prop]" :key="i" v-model="formData[item.prop][i]" style="margin-bottom: 5px;">
+          <el-input v-for="(v, i) in formData[item.prop]" :key="i" v-model="formData[item.prop][i]" :disabled="getDisabled(item)" style="margin-bottom: 5px;">
             <template #append>
               <el-button @click="delInput(item.prop, i)" :disabled="formData[item.prop].length <= 1" type="danger">
                 <el-icon>
@@ -19,8 +19,8 @@
           </el-button>
         </el-form-item>
         <el-form-item :label="item.name" :prop="item.prop" :rules="item.rules || []" v-else>
-          <el-input v-if="item.type === 'input'" v-model="formData[item.prop]" :disabled="getDisabled(item)" :placeholder="item.placeholder" clearable/>
-          <el-input-tag v-if="item.type === 'input-tag'" v-model="formData[item.prop]" :disabled="getDisabled(item)" :placeholder="item.placeholder" clearable
+          <el-input v-if="item.type === 'input'" v-model="formData[item.prop]" :placeholder="item.placeholder??''" clearable :disabled="getDisabled(item)"/>
+          <el-input-tag v-if="item.type === 'input-tag'" v-model="formData[item.prop]" :placeholder="item.placeholder??''" clearable :disabled="getDisabled(item)"
                         @keydown="(e:any)=> item.props?.keydownPrevent && e.preventDefault()"
                         collapse-tags collapse-tags-tooltip
                         :max-collapse-tags="item.props?.maxCollapseTags ?? 1"
@@ -31,19 +31,23 @@
               <span>{{ getInputTagLabel(item, scope.value) }}</span>
             </template>
           </el-input-tag>
-          <el-input v-else-if="item.type === 'password'" type="password" v-model="formData[item.prop]" :disabled="getDisabled(item)" :placeholder="item.placeholder" clearable/>
+          <el-input v-else-if="item.type === 'password'" type="password" v-model="formData[item.prop]" :placeholder="item.placeholder??''" clearable :disabled="getDisabled(item)"/>
           <el-input-number v-else-if="item.type === 'number'" :min="item.min" :max="item.max" v-model="formData[item.prop]" :disabled="getDisabled(item)" controls-position="right" style="width:100%"/>
-          <el-date-picker v-else-if="item.type === 'date'" type="date" v-model="formData[item.prop]" :value-format="item.format"/>
-          <el-select v-else-if="item.type === 'select'" v-model="formData[item.prop]" :disabled="getDisabled(item)" :placeholder="item.placeholder" clearable>
-            <el-option v-for="opt in item.options" :label="opt.label" :value="opt.value"></el-option>
+          <el-date-picker v-else-if="item.type === 'date'" type="date" v-model="formData[item.prop]" :value-format="item.format" :disabled="getDisabled(item)"/>
+          <el-select v-else-if="item.type === 'select'" v-model="formData[item.prop]" :placeholder="item.placeholder??''" clearable :disabled="getDisabled(item)">
+            <el-option v-for="opt in getOptions(item)" :label="opt.label" :value="opt.value"></el-option>
           </el-select>
+          <el-tree-select v-else-if="item.type === 'tree-select'" v-model="formData[item.prop]" :data="getOptions(item)" :props="item.props" :placeholder="item.placeholder??''" :disabled="getDisabled(item)"
+                          :check-strictly="item.checkStrictly?? false"
+                          :default-expand-all="item.defaultExpandAll??false"
+          />
           <el-radio-group v-else-if="item.type === 'radio'" v-model="formData[item.prop]" :disabled="getDisabled(item)">
-            <el-radio v-for="opt in item.options" :value="opt.value">{{ opt.label ?? opt.value }}</el-radio>
+            <el-radio v-for="opt in getOptions(item)" :value="opt.value">{{ opt.label ?? opt.value }}</el-radio>
           </el-radio-group>
-          <el-tag v-else-if="item.type === 'tag'" v-for="t in formData[item.prop]" :key="t[item.props['value']]" closable @close="(e:any)=>handleTagClose(e,item,t)">
+          <el-tag v-else-if="item.type === 'tag'" v-for="t in formData[item.prop]" :key="t[item.props['value']]" closable @close="(e:any)=>handleTagClose(e,item,t)" :disabled="getDisabled(item)">
             {{ getTagLabel(item, t) }}
           </el-tag>
-          <Cron v-else-if="item.type === 'cron'" v-model="formData[item.prop]" :disabled="getDisabled(item)" editable/>
+          <Cron v-else-if="item.type === 'cron'" v-model="formData[item.prop]" editable :disabled="getDisabled(item)"/>
           <slot :name="item.prop" v-else/>
         </el-form-item>
       </el-col>
@@ -62,10 +66,14 @@ import {computed, ref, watch} from 'vue';
 import type {FormInstance} from 'element-plus'
 import Cron from '../cron/index.vue'
 
-const props = defineProps<{
-  option: DynamicFormOption;
-  formData: Record<string, any>;
-}>();
+const props = withDefaults(
+    defineProps<{
+      option: DynamicFormOption;
+      dict?: Record<string, any[]>
+      formData: Record<string, any>;
+    }>(),
+    {option: {}, dict: {}, formData: {}}
+)
 
 const option = computed(() => ({
   submitShow: true,
@@ -93,7 +101,11 @@ function delInput(prop: string, index: number) {
 }
 
 function getDisabled(item: DynamicFormItem) {
-  return typeof item.disabled === 'function' ? item.disabled() : item.disabled
+  return typeof item.disabled === 'function' ? item.disabled(props.formData) : item.disabled
+}
+
+function getOptions(item: DynamicFormItem) {
+  return props.dict[item.dictKey] ?? item.options
 }
 
 const emit = defineEmits<{

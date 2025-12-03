@@ -6,7 +6,6 @@ export interface DynamicFormOption {
     submitText?: string
     cancelText?: string
     span?: string
-    cols?: number
     items: DynamicFormItem[]
 }
 
@@ -15,7 +14,10 @@ export interface DynamicFormItem {
     name: string
     type: string
     placeholder?: string
+    checkStrictly?: boolean
+    defaultExpandAll?: boolean
     disabled?: boolean | ((record?: any) => boolean)
+    dictKey?: string
     options?: DynamicFormItemOption[]
     props?: DynamicFormItemProps
     format?: string
@@ -28,6 +30,6 @@ export interface DynamicFormItemOption {
 }
 
 export interface DynamicFormItemProps {
-    label: string | ((record?: any) => string)
+    label: string
     value: any
 }

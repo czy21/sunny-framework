@@ -67,7 +67,7 @@ import {VxeTable} from "vxe-table";
 import {ElButton, ElDatePicker, ElInput, ElInputNumber, ElOption, ElSelect} from "element-plus";
 
 const props = withDefaults(defineProps<TableProps>(), {
-  defaultRowValue() {
+  rowVal() {
     return {}
   },
   columns: () => [],
@@ -222,7 +222,7 @@ const showAddRow = (scope) => {
 }
 
 const addRow = (scope) => {
-  props.data.splice(scope?.rowIndex + 1, 0, {...props.defaultRowValue})
+  props.data.splice(scope?.rowIndex + 1, 0, {...props.rowVal})
 }
 
 const delRow = (scope) => {

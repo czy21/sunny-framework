@@ -1,5 +1,7 @@
 <template>
   <el-table ref="tableRef"
+            :row-key="props.rowKey"
+            default-expand-all
             border
             :data="props.data"
             :header-cell-style="headerCellStyle"
@@ -58,8 +60,11 @@ import {util} from "@sunny-framework-js/core"
 import {TableEmits, TableProps} from "./DynamicTableType.ts";
 
 const props = withDefaults(defineProps<TableProps>(), {
-  defaultRowValue() {
+  rowVal() {
     return {}
+  },
+  rowKey() {
+    return 'id'
   },
   selectable() {
     return false
@@ -231,7 +236,7 @@ const showAddRow = (scope: any) => {
 }
 
 const addRow = (scope: any) => {
-  props.data.splice(scope?.rowIndex + 1, 0, {...props.defaultRowValue})
+  props.data.splice(scope?.rowIndex + 1, 0, {...props.rowVal})
 }
 
 const delRow = (scope: any) => {

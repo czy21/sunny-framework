@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="props.dialogShow" :title="props.dialogTitle" @close="handleCancel">
-    <DynamicForm ref="editRef" :form-data="props.formData" :option="props.formOption" @submit="handleSubmit" @cancel="handleCancel">
+    <DynamicForm ref="editRef" :form-data="props.formData" :option="props.formOption" :dict="props.dict" @submit="handleSubmit" @cancel="handleCancel">
       <template v-for="t in props.formOption.items?.filter((m:any) => !m.type)" :key="t.prop" #[t.prop]>
         <slot :name="t.prop" :item="t"></slot>
       </template>
@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, getCurrentInstance,computed} from "vue";
+import {ref, getCurrentInstance, computed} from "vue";
 import {DynamicForm, DynamicFormOption} from "@sunny-framework-js/vue";
 import type {FormInstance} from 'element-plus'
 
@@ -18,6 +18,7 @@ const editRef = ref();
 const props = defineProps<{
   dialogShow: boolean,
   dialogTitle: string,
+  dict?: Record<string, any[]>,
   formOption: DynamicFormOption,
   formData: Record<string, any>
 }>()

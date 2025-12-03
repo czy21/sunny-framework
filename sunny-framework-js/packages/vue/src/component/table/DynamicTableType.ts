@@ -9,7 +9,8 @@ declare module 'element-plus' {
 }
 
 export interface TableProps {
-    defaultRowValue?: object
+    rowVal?: object
+    rowKey?: string
     selectable?: boolean
     columns: Array<TableColumn>
     data: Array<object>
