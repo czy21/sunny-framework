@@ -16,6 +16,7 @@ export interface DynamicFormItem {
     placeholder?: string
     checkStrictly?: boolean
     defaultExpandAll?: boolean
+    expandOnClickNode?: boolean
     disabled?: boolean | ((record?: any) => boolean)
     dictKey?: string
     options?: DynamicFormItemOption[]

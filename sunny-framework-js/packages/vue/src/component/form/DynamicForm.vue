@@ -38,8 +38,9 @@
             <el-option v-for="opt in getOptions(item)" :label="opt.label" :value="opt.value"></el-option>
           </el-select>
           <el-tree-select v-else-if="item.type === 'tree-select'" v-model="formData[item.prop]" :data="getOptions(item)" :props="item.props" :placeholder="item.placeholder??''" :disabled="getDisabled(item)"
-                          :check-strictly="item.checkStrictly?? false"
-                          :default-expand-all="item.defaultExpandAll??false"
+                          :check-strictly="item.checkStrictly?? true"
+                          :default-expand-all="item.defaultExpandAll??true"
+                          :expand-on-click-node="item.expandOnClickNode??true"
           />
           <el-radio-group v-else-if="item.type === 'radio'" v-model="formData[item.prop]" :disabled="getDisabled(item)">
             <el-radio v-for="opt in getOptions(item)" :value="opt.value">{{ opt.label ?? opt.value }}</el-radio>
