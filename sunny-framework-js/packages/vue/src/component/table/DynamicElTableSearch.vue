@@ -1,7 +1,7 @@
 <template>
   <el-form ref="formRef" :model="formData">
     <el-row :gutter="10">
-      <el-col v-for="item in option.items" :span="option.span">
+      <el-col v-for="item in option.items" :span="item.span ?? option.span">
         <el-form-item v-if="item.type ==='action'">
           <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
           <el-button :icon="Refresh" @click="handleReset">重置</el-button>
@@ -31,7 +31,7 @@ const props = defineProps<{
 
 const option = computed(() => {
   const opt = {
-    span: 3,
+    span: 4,
     ...props.option
   }
 
