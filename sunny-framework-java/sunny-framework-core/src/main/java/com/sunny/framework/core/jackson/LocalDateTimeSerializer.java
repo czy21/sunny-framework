@@ -1,4 +1,4 @@
-package com.sunny.framework.web.json;
+package com.sunny.framework.core.jackson;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;

@@ -4,7 +4,6 @@ package com.sunny.framework.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sunny.framework.web.feign.FeignConfigure;
 import com.sunny.framework.web.handler.GlobalExceptionHandler;
-import com.sunny.framework.web.json.JacksonConfigure;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessMemoryMetrics;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessThreadMetrics;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -19,6 +18,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -37,23 +37,21 @@ public class WebAutoConfigure implements WebMvcConfigurer {
         this.objectMapper = objectMapper;
     }
 
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", corsConfiguration);
-        return new CorsFilter(source);
-    }
-
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.stream()
                 .filter(t -> t instanceof MappingJackson2HttpMessageConverter)
                 .findFirst()
                 .ifPresent(httpMessageConverter -> ((MappingJackson2HttpMessageConverter) httpMessageConverter).setObjectMapper(objectMapper.copy()));
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedHeaders("*")
+                .allowedMethods("*")
+                .allowCredentials(true);
     }
 
     @Override

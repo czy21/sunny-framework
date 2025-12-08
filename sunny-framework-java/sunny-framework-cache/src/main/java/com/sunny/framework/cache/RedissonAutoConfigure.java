@@ -58,7 +58,6 @@ public class RedissonAutoConfigure {
         this.redissonAutoConfigureCustomizers = redissonAutoConfigureCustomizerObjectProvider.orderedStream().toList();
     }
 
-
     @Bean
     @Lazy
     @ConditionalOnMissingBean(RedissonReactiveClient.class)

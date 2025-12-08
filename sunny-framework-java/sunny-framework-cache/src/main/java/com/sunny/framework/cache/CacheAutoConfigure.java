@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import com.sunny.framework.cache.aspect.DistributedLockAspect;
-import com.sunny.framework.cache.service.DistributeLockService;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -50,15 +47,4 @@ public class CacheAutoConfigure {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(valueSerializer));
         return RedisCacheManager.builder(factory).cacheDefaults(config).build();
     }
-
-    @Bean
-    public DistributedLockAspect distributedLockAspect(RedissonClient redissonClient) {
-        return new DistributedLockAspect(redissonClient);
-    }
-
-    @Bean
-    public DistributeLockService distributeLockService(RedissonClient redissonClient) {
-        return new DistributeLockService(redissonClient);
-    }
-
 }
