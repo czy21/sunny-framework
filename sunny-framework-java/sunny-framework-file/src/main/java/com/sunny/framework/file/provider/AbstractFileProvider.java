@@ -3,12 +3,14 @@ package com.sunny.framework.file.provider;
 import com.sunny.framework.file.FiletProperties;
 import com.sunny.framework.file.model.FileEntity;
 import com.sunny.framework.file.model.FileResult;
+import com.sunny.framework.file.model.FileTargetKind;
 import com.sunny.framework.file.repository.FileRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -62,12 +64,21 @@ public abstract class AbstractFileProvider implements FileProvider {
                 .build();
     }
 
+    @Override
     public FileResult generateFileResult(FileEntity fileEntity) {
-        return FileResult.builder()
+        FileResult fileResult = FileResult.builder()
                 .id(fileEntity.getId())
                 .name(fileEntity.getName())
                 .type(fileEntity.getType())
                 .path(FilenameUtils.separatorsToUnix(Paths.get(config.getPath(), fileEntity.getPath()).toString()))
                 .build();
+        try {
+            if (config.getKind() != FileTargetKind.LOCAL) {
+                fileResult.setFullPath(new URI(config.getRoot()).resolve(fileResult.getPath()).toString());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return fileResult;
     }
 }

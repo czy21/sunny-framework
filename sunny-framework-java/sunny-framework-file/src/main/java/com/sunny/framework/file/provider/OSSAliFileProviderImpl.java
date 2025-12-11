@@ -25,9 +25,8 @@ public class OSSAliFileProviderImpl extends AbstractFileProvider implements File
 
     @Override
     public FileResult upload(MultipartFile file, FileEntity fileEntity, FileResult fileResult) throws Exception {
-        PutObjectRequest putObjectRequest=new PutObjectRequest(config.getPath(),fileEntity.getPath(),file.getInputStream());
+        PutObjectRequest putObjectRequest = new PutObjectRequest(config.getPath(), fileEntity.getPath(), file.getInputStream());
         client.putObject(putObjectRequest);
-        fileResult.setFullPath(new URI(config.getRoot()).resolve(fileResult.getPath()).toString());
         return fileResult;
     }
 }

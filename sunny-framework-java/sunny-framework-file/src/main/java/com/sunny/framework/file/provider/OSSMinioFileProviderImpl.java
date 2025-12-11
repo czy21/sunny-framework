@@ -37,7 +37,6 @@ public class OSSMinioFileProviderImpl extends AbstractFileProvider implements Fi
                 .contentType(file.getContentType())
                 .build();
         client.putObject(putObjectArgs);
-        fileResult.setFullPath(new URI(config.getRoot()).resolve(fileResult.getPath()).toString());
         return fileResult;
     }
 }

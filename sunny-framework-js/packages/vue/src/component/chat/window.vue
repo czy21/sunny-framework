@@ -8,13 +8,18 @@
       </template>
     </DynamicScroller>
   </div>
-<!--  <el-divider/>-->
+  <div>
+    <el-upload :on-change="handleUploadImage" action="api/file/upload" :show-file-list="false">
+      <el-button type="primary" :icon="Picture"/>
+    </el-upload>
+  </div>
   <el-input v-model="content" type="textarea" placeholder="输入消息..." :rows="3" @keydown="handleKeyDown"/>
 </template>
 
 <script setup lang="ts">
 import {nextTick, ref, watch} from "vue";
 import ChatMessage from './message.vue';
+import {Picture} from '@element-plus/icons-vue'
 
 const props = withDefaults(
     defineProps<{
@@ -44,6 +49,22 @@ watch(content, (newVal) => {
   }
 });
 
+const addMessage = (data) => {
+  const messages = [...props.messages];
+  messages.push({
+    id: messages.length + 1,
+    role: "sender",
+    ...data
+  });
+  emit("update:messages", messages);
+  nextTick(() => {
+    scroller.value.scrollToItem(props.messages.length - 1)
+    requestAnimationFrame(() => {
+      scroller.value.scrollToItem(props.messages.length - 1)
+    })
+  })
+}
+
 const sendMessage = () => {
   const text = content.value.trim();
   if (text.length > 0) {
@@ -51,20 +72,7 @@ const sendMessage = () => {
       editingMessage.value = null;
       content.value = "";
     } else {
-      const messages = [...props.messages];
-      messages.push({
-        id: messages.length + 1,
-        type: "text",
-        role: "sender",
-        data: [{text}]
-      });
-      emit("update:messages", messages);
-      nextTick(() => {
-        scroller.value.scrollToItem(props.messages.length - 1)
-        requestAnimationFrame(() => {
-          scroller.value.scrollToItem(props.messages.length - 1)
-        })
-      })
+      addMessage({type: "text", data: [{text}]})
     }
     content.value = ''
   }
@@ -79,6 +87,23 @@ const handleKeyDown = (event: KeyboardEvent) => {
     sendMessage();
   }
 };
+
+const handleUploadImage = (file, uploadFiles) => {
+  const code = file.response?.code
+  if (code === 0) {
+    const data = file.response?.data
+    addMessage({
+      type: "file", data: [
+        {
+          fileType: data.type,
+          fileId: data.id,
+          fileUrl: data.fullPath,
+          fileName: data.name
+        }
+      ]
+    })
+  }
+}
 
 const handleMessageEdit = (item) => {
   editingMessage.value = item;

@@ -27,7 +27,7 @@ public class FileAutoConfigure {
 
     @Bean
     @ConditionalOnMissingBean
-    public FileService fileService() {
-        return new FileService();
+    public FileService fileService(FileRepository fileRepository, FileProviderFactory fileProviderFactory) {
+        return new FileService(fileRepository, fileProviderFactory);
     }
 }

@@ -3,7 +3,7 @@
     <el-popover pure trigger="hover" :placement="role === 'sender' ? 'left-start' : 'right-start'" :popper-style="{ minWidth: '0px', width: 'auto' }">
       <template #default>
         <el-button-group direction="horizontal" size="small" v-if="editable">
-          <el-button plain :icon="IconEdit" @click="handleEdit"/>
+          <el-button plain :icon="IconEdit" @click="handleEdit" v-if="props.modelValue.type === 'text'"/>
           <el-button plain :icon="IconDelete" @click="handleDelete"/>
         </el-button-group>
       </template>
@@ -11,6 +11,9 @@
         <div class="bubble">
           <div v-if="props.modelValue.type === 'text'">
             {{ props.modelValue.data[0].text }}
+          </div>
+          <div v-if="props.modelValue.type === 'file'">
+            <img :src="props.modelValue.data[0].fileUrl" v-if="props.modelValue.data[0].fileType.startsWith('image')">
           </div>
         </div>
       </template>
