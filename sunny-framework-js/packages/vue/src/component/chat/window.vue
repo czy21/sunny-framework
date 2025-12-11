@@ -9,7 +9,7 @@
     </DynamicScroller>
   </div>
   <div>
-    <el-upload :on-change="handleUploadImage" action="api/file/upload" :show-file-list="false">
+    <el-upload :on-change="handleUploadImage" :action="uploadUrl" :show-file-list="false">
       <el-button type="primary" :icon="Picture"/>
     </el-upload>
   </div>
@@ -32,6 +32,8 @@ const props = withDefaults(
 )
 
 const emit = defineEmits(["update:messages", "change"]);
+
+const uploadUrl = `${import.meta.env.VITE_BASE_API}/file/upload`
 
 const scroller = ref(null)
 const content = ref("");

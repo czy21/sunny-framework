@@ -13,7 +13,13 @@
             {{ props.modelValue.data[0].text }}
           </div>
           <div v-if="props.modelValue.type === 'file'">
-            <img :src="props.modelValue.data[0].fileUrl" v-if="props.modelValue.data[0].fileType.startsWith('image')">
+            <el-image style="max-width: 150px; max-height: 200px" 
+            :src="props.modelValue.data[0].fileUrl" 
+            :preview-src-list="[props.modelValue.data[0].fileUrl]" 
+            :preview-teleported="true"
+            fit="cover"
+            show-progress
+            v-if="props.modelValue.data[0].fileType.startsWith('image')" />
           </div>
         </div>
       </template>
